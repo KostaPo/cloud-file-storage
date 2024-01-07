@@ -1,0 +1,36 @@
+version: "3.8"
+services:
+
+ java-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://database:5432/DataCloud"
+      SPRING_DATASOURCE_USERNAME: "usr"
+      SPRING_DATASOURCE_PASSWORD: "pwd"
+    container_name: java-app
+    ports:
+      - "8080:8080/tcp"
+    volumes:
+      - ./app_logs:/etc/java/logs
+    restart: always
+    depends_on:
+      - database
+
+ database:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: "usr"
+      POSTGRES_PASSWORD: "pwd"
+      POSTGRES_DB: "DataCloud"
+    container_name: postgres
+    volumes:
+      - ./pg_logs:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  app_logs:
+    driver: local
+  pg_logs:
+    driver: local
