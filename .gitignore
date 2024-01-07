@@ -1,4 +1,8 @@
-/src/
-Dockerfile
-Docker-Compose
-pom.xml
+/.idea/
+/.mvn/
+/app_logs/
+/pg_logs/
+docker-compose-debug.yml
+HELP.md
+mvnw
+mvnw.cmd
