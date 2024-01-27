@@ -1,0 +1,9 @@
+/.idea/
+/.mvn/
+/app_logs/
+/pg_logs/
+/target/
+docker-compose-debug.yml
+HELP.md
+mvnw
+mvnw.cmd
