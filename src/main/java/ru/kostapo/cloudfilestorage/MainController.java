@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class MainController {
 
-
     @RequestMapping({"", "/"})
     @ResponseBody
     public String index() {
-        log.info("info");
+        Integer q = 123;
+        log.info("info {}", q);
         return "Hello";
     }
 }
