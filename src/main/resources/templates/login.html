@@ -7,7 +7,7 @@
 <div id="wrapper">
     <div class="title fw-bold">Login</div>
     <form id="signin" th:action="@{/login}" method="post">
-        <input type="text" id="login" name="login" placeholder="login" required />
+        <input type="text" id="username" name="username" placeholder="username" required />
         <input type="password" id="password" name="password" placeholder="password" required />
         <button type="submit">&#xf0da;</button>
         <p>Don't have an account? <a th:href="@{/registration}" class="text-dark">Registration</a></p>
