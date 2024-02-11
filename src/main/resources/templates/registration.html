@@ -7,8 +7,8 @@
 <body>
 <div id="wrapper">
     <div class="title fw-bold">Registration</div>
-    <form id="signin" method="" action="" autocomplete="off">
-        <input type="text" id="login" name="login" placeholder="login" required />
+    <form id="signin" th:action="@{/registration}" method="post">
+        <input type="text" id="username" name="username" placeholder="username" required />
         <input type="password" id="password" name="password" placeholder="password" required />
         <button type="submit">&#xf0da;</button>
         <p>Already registered? <a th:href="@{/login}" class="text-dark">Login</a></p>
