@@ -5,13 +5,18 @@
 </head>
 <body>
 <div id="wrapper">
-    <div class="title fw-bold">Login</div>
-    <form id="signin" th:action="@{/login}" method="post">
-        <input type="text" id="username" name="username" placeholder="username" required />
-        <input type="password" id="password" name="password" placeholder="password" required />
+    <div class="title fw-bold text-center">Вход</div>
+    <form method="post" th:action="@{/login}" th:object="${userDto}" id="signin">
+        <input type="text" id="username" th:field="*{username}" placeholder="username" required />
+        <input type="password" id="password" th:field="*{password}" placeholder="password" required />
         <button type="submit">&#xf0da;</button>
-        <p>Don't have an account? <a th:href="@{/registration}" class="text-dark">Registration</a></p>
+        <div class="text-center">
+            <p>Нет аккаунта? <a th:href="@{/registration}" class="text-dark">Зарегистрируйтесь</a></p>
+            <div style="color: rgb(0, 126, 165)" th:if="${logout}">Вы вышли из системы!</div>
+            <div style="color: red" th:if="${error}">Проверьте логин или пароль!</div>
+        </div>
     </form>
 </div>
+<script src="/js/bootstrap.bundle.js"></script>
 </body>
 </html>

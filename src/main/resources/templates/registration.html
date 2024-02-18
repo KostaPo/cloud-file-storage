@@ -3,15 +3,22 @@
 <head>
     <th:block th:include="fragments/common :: head"/>
 </head>
-
 <body>
 <div id="wrapper">
-    <div class="title fw-bold">Registration</div>
-    <form id="signin" th:action="@{/registration}" method="post">
-        <input type="text" id="username" name="username" placeholder="username" required />
-        <input type="password" id="password" name="password" placeholder="password" required />
+    <div class="title fw-bold text-center">Регистрация</div>
+    <form method="post" th:action="@{/registration}" th:object="${userDto}" id="signin">
+        <input type="text" id="username" th:field="*{username}" placeholder="username" required />
+        <input type="password" id="password" th:field="*{password}" placeholder="password" required />
         <button type="submit">&#xf0da;</button>
-        <p>Already registered? <a th:href="@{/login}" class="text-dark">Login</a></p>
+        <div class="text-center">
+            <p>Зарегистрированны? <a th:href="@{/login}" class="text-dark">Войдите</a></p>
+            <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+                <p>login error</p>
+            </div>
+            <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                <p>pass error</p>
+            </div>
+        </div>
     </form>
 </div>
 <script src="/js/bootstrap.bundle.js"></script>

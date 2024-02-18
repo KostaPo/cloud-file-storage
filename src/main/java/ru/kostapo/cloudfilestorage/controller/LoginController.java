@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.function.ServerResponse;
+import ru.kostapo.cloudfilestorage.entity.dto.UserReqDto;
 
 @Log4j2
 @Controller
@@ -15,28 +15,22 @@ import org.springframework.web.servlet.function.ServerResponse;
 public class LoginController {
 
     @GetMapping
-    public String getLogin(@RequestParam(value = "error", required = false) String error,
-                           @RequestParam(value = "logout", required = false) String logout,
+    public String getLogin(@RequestParam(value = "logout", required = false) String logout,
+                           @RequestParam(value = "error", required = false) String error,
                            Model model) {
         if (isAuthenticated()) {
             return "redirect:/";
         }
-        log.info("get request on login page");
-        if (error != null) {
-            model.addAttribute("error", error);
-            log.info("login page request with error: {}", error);
-        }
         if (logout != null) {
             model.addAttribute("logout", logout);
-            log.info("login page request with logout: {}", logout);
+            log.info("login page request with logout");
         }
-        return "login";
-    }
-
-
-    @PostMapping
-    public String postLogin() {
-        log.info("POST REQ");
+        if (error != null) {
+            model.addAttribute("error", error);
+            log.info("login page request with error");
+        }
+        log.debug("get request on login page");
+        model.addAttribute("userDto", new UserReqDto());
         return "login";
     }
 

@@ -6,11 +6,9 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import ru.kostapo.cloudfilestorage.entity.dto.UserReqDto;
 import ru.kostapo.cloudfilestorage.service.UserService;
 
@@ -25,22 +23,25 @@ public class RegistrationController {
     }
 
     @GetMapping
-    public String getRegistration() {
+    public String getRegistration(Model model) {
         if (isAuthenticated()) {
             return "redirect:/";
         }
         log.info("get request on register page");
+        model.addAttribute("userDto", new UserReqDto());
         return "registration";
     }
 
     @PostMapping
-    public String postRegistration(@RequestParam("username") String username, @RequestParam("password")String password) {
-        UserReqDto user = UserReqDto.builder()
-                .login(username)
-                .password(password)
-                .build();
+    public String postRegistration(@ModelAttribute("userDto") @Valid UserReqDto user, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            log.info("BindingResult has errors");
+            return "registration";
+        }
         userService.save(user);
-        log.info("register user with username {}, password {}", username, password);
+        log.info("register user with username {}, password {}",
+                user.getUsername(),
+                user.getPassword());
         return "redirect:/login";
     }
 

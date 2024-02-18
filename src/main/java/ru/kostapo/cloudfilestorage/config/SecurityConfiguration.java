@@ -48,8 +48,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/**").authenticated())
                 .formLogin((form) -> form
                         .loginPage("/login")
-                        .usernameParameter("username")
                         .defaultSuccessUrl("/", true)
+                        .failureUrl("/login?error")
+                        .usernameParameter("username")
                         .permitAll())
                 .logout((logout) -> logout
                         .logoutUrl("/logout")
@@ -61,3 +62,4 @@ public class SecurityConfiguration {
                 .build();
     }
 }
+
