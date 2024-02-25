@@ -7,16 +7,15 @@
 <div id="wrapper">
     <div class="title fw-bold text-center">Регистрация</div>
     <form method="post" th:action="@{/registration}" th:object="${userDto}" id="signin">
-        <input type="text" id="username" th:field="*{username}" placeholder="username" required />
-        <input type="password" id="password" th:field="*{password}" placeholder="password" required />
+        <input type="text" id="username" th:field="*{username}" placeholder="username" required/>
+        <input type="password" id="password" th:field="*{password}" placeholder="password" required/>
         <button type="submit">&#xf0da;</button>
         <div class="text-center">
             <p>Зарегистрированны? <a th:href="@{/login}" class="text-dark">Войдите</a></p>
-            <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
-                <p>login error</p>
-            </div>
-            <div style="color: red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
-                <p>pass error</p>
+            <div th:if="${errors} != null">
+                <div th:each="error : ${errors.allErrors}">
+                    <p th:text="${error.defaultMessage}" style="color: red;"></p>
+                </div>
             </div>
         </div>
     </form>

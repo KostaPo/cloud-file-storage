@@ -18,18 +18,19 @@ public class LoginController {
     public String getLogin(@RequestParam(value = "logout", required = false) String logout,
                            @RequestParam(value = "error", required = false) String error,
                            Model model) {
+        log.info("GET REQUEST on LOGIN page");
         if (isAuthenticated()) {
+            log.info("LOGIN REQUEST redirect:/");
             return "redirect:/";
         }
         if (logout != null) {
             model.addAttribute("logout", logout);
-            log.info("login page request with logout");
+            log.info("LOGIN REQUEST: logout");
         }
         if (error != null) {
-            model.addAttribute("error", error);
-            log.info("login page request with error");
+            model.addAttribute("errors", error);
+            log.error("LOGIN REQUEST: error");
         }
-        log.debug("get request on login page");
         model.addAttribute("userDto", new UserReqDto());
         return "login";
     }

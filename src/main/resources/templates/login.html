@@ -13,7 +13,7 @@
         <div class="text-center">
             <p>Нет аккаунта? <a th:href="@{/registration}" class="text-dark">Зарегистрируйтесь</a></p>
             <div style="color: rgb(0, 126, 165)" th:if="${logout}">Вы вышли из системы!</div>
-            <div style="color: red" th:if="${error}">Проверьте логин или пароль!</div>
+            <div style="color: red" th:if="${errors}">Проверьте логин или пароль!</div>
         </div>
     </form>
 </div>

@@ -2,15 +2,22 @@ package ru.kostapo.cloudfilestorage.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import ru.kostapo.cloudfilestorage.entity.dto.UserReqDto;
+import ru.kostapo.cloudfilestorage.exception.NonUniqConstraintException;
+import ru.kostapo.cloudfilestorage.exception.NonValidConstraintException;
 import ru.kostapo.cloudfilestorage.service.UserService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 @Controller
@@ -24,25 +31,28 @@ public class RegistrationController {
 
     @GetMapping
     public String getRegistration(Model model) {
+        log.info("GET REQUEST on REGISTRATION page");
         if (isAuthenticated()) {
+            log.info("REGISTRATION REQUEST redirect:/");
             return "redirect:/";
         }
-        log.info("get request on register page");
         model.addAttribute("userDto", new UserReqDto());
         return "registration";
     }
 
     @PostMapping
-    public String postRegistration(@ModelAttribute("userDto") @Valid UserReqDto user, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) {
-            log.info("BindingResult has errors");
-            return "registration";
+    public String postRegistration(@Valid @ModelAttribute("userDto") UserReqDto user, BindingResult bindingResult) {
+        log.info("POST REQUEST on REGISTRATION page with dto: " + user);
+        if (bindingResult.hasErrors()) {
+            throw new NonValidConstraintException(bindingResult);
         }
-        userService.save(user);
-        log.info("register user with username {}, password {}",
-                user.getUsername(),
-                user.getPassword());
-        return "redirect:/login";
+        try {
+            userService.save(user);
+            log.info("REGISTER NEW USER with username [{}]", user.getUsername());
+            return "redirect:/login";
+        } catch (DataIntegrityViolationException e) {
+            throw new NonUniqConstraintException(bindingResult);
+        }
     }
 
     private boolean isAuthenticated() {

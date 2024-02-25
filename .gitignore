@@ -3,6 +3,7 @@
 /app_logs/
 /pg_logs/
 /target/
+cloud-file-storage.iml
 docker-compose-debug.yml
 HELP.md
 mvnw
