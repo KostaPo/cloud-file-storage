@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userRepository.save(user);
+
     }
 
     @Override

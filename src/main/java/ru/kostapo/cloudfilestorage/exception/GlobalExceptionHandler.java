@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NonUniqConstraintException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public String handleDataIntegrityViolationException(NonUniqConstraintException ex, Model model) {
         ex.getBindingResult()
                 .rejectValue("username", "ViolationException", "Логин: логин занят!");

@@ -11,6 +11,7 @@ public class NonUniqConstraintException extends RuntimeException {
     public NonUniqConstraintException(BindingResult bindingResult) {
         this.bindingResult = bindingResult;
     }
+
     public NonUniqConstraintException(String message, BindingResult bindingResult) {
         super(message);
         this.bindingResult = bindingResult;
