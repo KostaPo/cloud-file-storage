@@ -9,15 +9,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.kostapo.cloudfilestorage.entity.dto.UserReqDto;
 import ru.kostapo.cloudfilestorage.exception.NonUniqConstraintException;
 import ru.kostapo.cloudfilestorage.exception.NonValidConstraintException;
 import ru.kostapo.cloudfilestorage.service.UserService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Log4j2
 @Controller

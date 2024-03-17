@@ -64,7 +64,7 @@ public class TestRegistrationController {
     @Test
     @Order(3)
     @DisplayName("POST '/registration' [redirect => login] для VALID и UNIQ данных")
-    public void test03_validDataRequestRegistration() throws Exception {
+    public void test03_goodDataRequestRegistration() throws Exception {
         MockHttpServletRequestBuilder request = post("/registration")
                 .param("username", "user")
                 .param("password", "pass");

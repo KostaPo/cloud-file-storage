@@ -1,1 +1,64 @@
 version: "3.8"
+services:
+
+  java-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: java-app
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://database:5432/DataCloud"
+      SPRING_DATASOURCE_USERNAME: "usr"
+      SPRING_DATASOURCE_PASSWORD: "pwd"
+      MINIO_CLIENT_USER: "user"
+      MINIO_CLIENT_PASSWORD: "password"
+      MINIO_CLIENT_ENDPOINT: "http://minio:9000"
+    ports:
+      - "8080:8080/tcp"
+    volumes:
+      - ./app_logs:/etc/java/logs
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+  database:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: "usr"
+      POSTGRES_PASSWORD: "usr"
+      POSTGRES_DB: "DataCloud"
+    volumes:
+      - ./pg_logs:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d DataCloud -U usr" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    environment:
+      MINIO_ROOT_USER: user
+      MINIO_ROOT_PASSWORD: password
+    command: server --console-address ":9001" /data
+    healthcheck:
+      test: [ "CMD-SHELL", "mc ready local"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - ./minio_data:/data
+
+volumes:
+  app_logs:
+    driver: locals
+  pg_logs:
+    driver: local
+  minio_data:
+    driver: local

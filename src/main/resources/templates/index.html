@@ -9,6 +9,23 @@
     <h2 th:text="${greeting}">Hello, Guest!</h2>
     <p>This is a dynamic example using Thymeleaf and Bootstrap 5.</p>
 
+    <section class="my-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 mx-auto">
+                    <h2>Upload Image Example</h2>
+                    <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
+                    <form method="post" th:action="@{/files}" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <input type="file" name="files" multiple class="form-control-file">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Загрузить</button>
+                    </form>
+                    <span th:if="${msg != null}" th:text="${msg}"></span>
+                </div>
+            </div>
+        </div>
+    </section>
     <p><a th:href="@{/logout}">Logout</a></p>
 </div>
 <script src="/js/bootstrap.bundle.js"></script>

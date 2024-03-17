@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kostapo.cloudfilestorage.entity.AppUser;
+import ru.kostapo.cloudfilestorage.entity.AppUserRole;
 import ru.kostapo.cloudfilestorage.entity.dto.UserReqDto;
 import ru.kostapo.cloudfilestorage.repository.UserRepository;
 
@@ -17,7 +18,6 @@ import java.util.List;
 
 @Log4j2
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -33,6 +33,7 @@ public class UserServiceImpl implements UserService {
         AppUser user = new AppUser();
         user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        user.setRole(AppUserRole.USER);
         userRepository.save(user);
 
     }

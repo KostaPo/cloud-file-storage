@@ -14,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import ru.kostapo.cloudfilestorage.service.UserService;
-import ru.kostapo.cloudfilestorage.service.UserServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -43,9 +42,12 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/img/**", "/css/**", "/js/**", "/registration").permitAll()
-                        .requestMatchers("/**").authenticated())
+                        .requestMatchers("/img/**", "/css/**", "/js/**", "/registration")
+                        .permitAll()
+                        .requestMatchers("/**")
+                        .authenticated())
                 .formLogin((form) -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)
@@ -59,6 +61,7 @@ public class SecurityConfiguration {
                         .deleteCookies("JSESSIONID")
                         .permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
                 .build();
     }
 }

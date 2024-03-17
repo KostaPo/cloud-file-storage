@@ -2,6 +2,7 @@
 /.mvn/
 /app_logs/
 /pg_logs/
+/minio_data/
 /target/
 cloud-file-storage.iml
 docker-compose-debug.yml

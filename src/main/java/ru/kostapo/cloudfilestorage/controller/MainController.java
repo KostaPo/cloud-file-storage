@@ -13,8 +13,7 @@ public class MainController {
 
     @GetMapping
     public String index(Model model) {
-        Integer q = 123;
-        log.info("info {}", q);
+        log.info("GET REQUEST on MAIN page");
         model.addAttribute("greeting", "Hello KostaPo");
         return "index";
     }
