@@ -4,5 +4,34 @@
     <title>CloudFileStorage</title>
     <link th:href="@{/img/favicon.ico}" rel="icon" type="image/x-icon">
     <link th:href="@{/css/bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/css/fontello.css}" rel="stylesheet"/>
     <link th:href="@{/css/style.css}" rel="stylesheet"/>
 </head>
+
+<!-- USER LINE -->
+<div th:fragment="userline">
+    <div class="row no-gutters">
+        <div class="col d-flex justify-content-center">
+            <h1 class="text">
+                <h2 th:text="'Привет, ' + ${user.getUsername()} + '!'"></h2>
+            </h1>
+        </div>
+        <div class="col d-flex justify-content-center">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="button">Выйти</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- UPLOADZONE -->
+<div th:fragment="uploadzone">
+    <div class="container-fluid">
+        <form action="/files" class="dropzone border rounded" method="post" enctype="multipart/form-data">
+            <div class="dz-clickable dz-message text-center">
+                <i class="icon-upload-cloud-outline icon"></i>
+                <div class="text">Перетащите файлы или нажмите тут</div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -2,11 +2,16 @@ package ru.kostapo.cloudfilestorage.exception;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartFile;
 import ru.kostapo.cloudfilestorage.entity.dto.UserReqDto;
 
 import java.util.Arrays;
@@ -17,8 +22,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
-    public String handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex, Model model) {
-        model.addAttribute("message", ex.getMessage());
+    public String handleMaxUploadSizeExceededException(@AuthenticationPrincipal User user,
+                                                       MaxUploadSizeExceededException ex,
+                                                       Model model) {
+        model.addAttribute("user", user);
+        model.addAttribute("message", "Превышен максимально допустимый размер файла!");
         log.error("MaxUploadSizeExceededException: " + ex.getMessage());
         return "index";
     }

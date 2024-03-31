@@ -33,8 +33,10 @@ public class MinioRepository {
     public void createAppRootBucket() {
         try {
             if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
+                log.info("create MinIO bucket with name [{}]", bucketName);
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
             }
+            log.info("MinIO bucket [{}] already created", bucketName);
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
                  NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
                  InvalidKeyException e) {
@@ -49,6 +51,7 @@ public class MinioRepository {
                     .bucket(bucketName)
                     .object("test/" + file.getOriginalFilename())
                     .build());
+            log.info("correct upload file '{}' ", file.getOriginalFilename());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
