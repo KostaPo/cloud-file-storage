@@ -1,6 +1,7 @@
 package ru.kostapo.cloudfilestorage.controller;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,9 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/files")
 public class FileController {
+
+    @Value("${dropzone.max.file.size}")
+    private Integer maxFileSize;
 
     private final FileServiceImpl fileService;
 

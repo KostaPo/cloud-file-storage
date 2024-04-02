@@ -9,25 +9,26 @@
 <div class="userline">
     <th:block th:include="fragments/common :: userline"/>
 </div>
-<p th:text="${message}" th:if="${message ne null}" class="error-message"></p>
+<p id="message" class="error-message"></p>
 <div class="uploadzone">
     <th:block th:include="fragments/common :: uploadzone"/>
 </div>
 
-<script>
-    Dropzone.autoDiscover = false; // Dropzone configuration
+<script th:inline="javascript">
+    Dropzone.autoDiscover = false;
+    var maxFilesize = [[${@environment.getProperty('dropzone.max.file.size')}]];
     var myDropzone = new Dropzone(".dropzone", {
         url: "/files",
         paramName: "files",
-        maxFilesize: null,
-        addRemoveLinks: false,
+        maxFilesize: maxFilesize,
         clickable: true,
         success: function(file, response) {
             this.removeFile(file);
         },
         error: function(file, message) {
+            document.getElementById('message').textContent = 'Файл ' + file.name + ' слишком большой!';
             this.removeFile(file);
-            document.body.innerHTML = message;
+            return false;
         },
         renameFile: function (file) {
             return file.fullPath;
