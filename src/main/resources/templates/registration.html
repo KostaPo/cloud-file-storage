@@ -4,7 +4,7 @@
     <th:block th:include="fragments/common :: head"/>
 </head>
 <body>
-<div id="wrapper">
+<div id="auth_group_wrapper">
     <div class="title fw-bold text-center">Регистрация</div>
     <form method="post" th:action="@{/registration}" th:object="${userDto}" id="signin">
         <input type="text" id="username" th:field="*{username}" placeholder="username" required/>

@@ -6,33 +6,36 @@
 </head>
 <body>
 
-<div class="userline">
-    <th:block th:include="fragments/common :: userline"/>
-</div>
-<p id="message" class="error-message"></p>
-<div class="uploadzone">
+<th:block th:include="fragments/common :: userbar"/>
+<p id="message" class="error-message" th:if="${message}" th:text="${message}" style="display: block"></p>
+<div class="d-flex flex-column align-items-center">
     <th:block th:include="fragments/common :: uploadzone"/>
+    <button id="startUpload" class="button btn mt-1">Начать загрузку</button>
 </div>
+
+
+
+<th:block th:include="fragments/common :: previews-container"/>
+
 
 <script th:inline="javascript">
     Dropzone.autoDiscover = false;
-    var maxFilesize = [[${@environment.getProperty('dropzone.max.file.size')}]];
-    var myDropzone = new Dropzone(".dropzone", {
-        url: "/files",
-        paramName: "files",
-        maxFilesize: maxFilesize,
-        clickable: true,
-        success: function(file, response) {
-            this.removeFile(file);
-        },
-        error: function(file, message) {
-            document.getElementById('message').textContent = 'Файл ' + file.name + ' слишком большой!';
-            this.removeFile(file);
-            return false;
-        },
-        renameFile: function (file) {
-            return file.fullPath;
+    var myDropzone = new Dropzone("#myDropzone", {
+        url: "/upload",
+        addRemoveLinks: true,
+        autoProcessQueue: false,
+        uploadMultiple: true,
+        parallelUploads: 100,
+        maxFiles: 100,
+        previewsContainer: ".dropzone-previews",
+        init: function () {
+            this.on("sending", function (file, xhr, formData) {
+                formData.append("files", file, file.fullPath);
+            });
         }
+    });
+    document.getElementById('startUpload').addEventListener('click', function () {
+        myDropzone.processQueue();
     });
 </script>
 </body>

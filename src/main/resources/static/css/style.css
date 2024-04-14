@@ -6,14 +6,11 @@
 }
 
 body {
+    min-width: 350px;
     background: rgb(52, 56, 61);
 }
 
-.title {
-    color: rgb(28, 30, 33);
-}
-
-#wrapper {
+#auth_group_wrapper {
     position: absolute;
     width: 320px;
     left: 50%;
@@ -74,7 +71,7 @@ body {
 }
 
 #signin input[type="text"]:focus, #signin input[type="password"]:focus {
-    color: rgb(255, 255, 255);
+    color: rgb(111, 119, 135);
 }
 
 #signin button[type="submit"] {
@@ -121,84 +118,15 @@ body {
 
 
 .button {
-    display: inline-block;
     background-color: rgb(28, 30, 33);
     color: rgb(79, 85, 97);
-    border: none;
-    padding: 10px 20px;
     border-radius: 5px;
-    cursor: pointer;
 }
 
 .button:hover {
     color: rgb(0, 126, 165);
     text-shadow: 1px 1px 2px rgb(0, 126, 165);
-}
-
-.dropzone {
-    border: 3px dashed rgb(28, 30, 33) !important;
-    border-radius: 5px !important;
-    padding: 20px !important;
-    text-align: center !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    opacity: 1 !important; /* убрать прозрачность */
-}
-
-.dropzone:hover {
-    border-color: rgb(0, 126, 165) !important;
-    box-shadow: 0 0 10px rgb(0, 126, 165) !important;
-}
-
-.uploadzone {
-    margin-bottom: 20px;
-}
-
-@media (max-width: 576px) {
-    .text {
-        font-size: 14px;
-    }
-}
-
-@media (min-width: 577px) and (max-width: 768px) {
-    .text {
-        font-size: 18px;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 992px) {
-    .text {
-        font-size: 22px;
-    }
-}
-
-@media (min-width: 993px) {
-    .text {
-        font-size: 26px;
-    }
-}
-
-@media (max-width: 576px) {
-    .icon {
-        font-size: 26px;
-    }
-}
-
-@media (min-width: 577px) and (max-width: 768px) {
-    .icon {
-        font-size: 30px;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 992px) {
-    .icon {
-        font-size: 38px;
-    }
-}
-
-@media (min-width: 993px) {
-    .icon {
-        font-size: 38px;
-    }
+    background-color: rgb(28, 30, 33);
 }
 
 .error-message {
@@ -208,3 +136,36 @@ body {
     padding: 10px;
     margin: 10px 0;
 }
+
+.navbar-toggler {
+    color: rgb(79, 85, 97);
+    background-color: rgb(28, 30, 33);
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+.navbar-toggler:active {
+    box-shadow: none;
+    color: rgb(0, 126, 165) !important;
+    border: 1px solid rgb(28, 30, 33) !important;
+}
+
+.form-control {
+    color: rgb(28, 30, 33);
+    border-color: rgb(28, 30, 33);
+    background-color: rgb(52, 56, 61);
+}
+.form-control:focus {
+    color: rgb(28, 30, 33);
+    border-color: rgb(0, 126, 165);
+    box-shadow: 0 1px 3px rgb(0, 126, 165);
+    background-color: rgb(52, 56, 61);
+}
+
+.form-control::placeholder, .form-control:focus::placeholder {
+    color: rgb(28, 30, 33);
+    background-color: rgb(52, 56, 61);
+}
+

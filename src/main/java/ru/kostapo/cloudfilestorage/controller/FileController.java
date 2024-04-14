@@ -14,14 +14,12 @@ import ru.kostapo.cloudfilestorage.service.FileServiceImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @Log4j2
 @Controller
-@RequestMapping("/files")
+@RequestMapping("/upload")
 public class FileController {
-
-    @Value("${dropzone.max.file.size}")
-    private Integer maxFileSize;
 
     private final FileServiceImpl fileService;
 
@@ -39,20 +37,6 @@ public class FileController {
         }
         model.addAttribute("user", user);
         return "index";
-    }
-
-
-
-
-
-
-
-
-
-    public File convertMultipartFileToFile(MultipartFile multipartFile) throws IOException {
-        File file = new File(multipartFile.getOriginalFilename());
-        multipartFile.transferTo(file);
-        return file;
     }
 
     public void listFilesAndDirectories(String directoryPath) {

@@ -6,32 +6,55 @@
     <link th:href="@{/css/bootstrap.css}" rel="stylesheet"/>
     <link th:href="@{/css/fontello.css}" rel="stylesheet"/>
     <link th:href="@{/css/style.css}" rel="stylesheet"/>
+    <script th:src="@{/js/bootstrap.bundle.js}"></script>
 </head>
 
-<!-- USER LINE -->
-<div th:fragment="userline">
-    <div class="row no-gutters">
-        <div class="col d-flex justify-content-center">
-            <h1 class="text">
-                <h2 th:text="'Привет, ' + ${user.getUsername()} + '!'"></h2>
-            </h1>
+<!-- USERBAR -->
+<div th:fragment="userbar">
+    <nav class="navbar navbar-expand-sm">
+        <div class="container-fluid">
+            <div class="fs-3">
+                <span class="fw-bold" th:text="'Привет, ' + ${user.getUsername()} + '!'"></span>
+            </div>
+            <button class="navbar-toggler button btn" data-bs-toggle="collapse" data-bs-target="#mynavbar">
+                <i class="icon-menu icon"></i>
+            </button>
+            <div class="collapse navbar-collapse px-2" id="mynavbar">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <div class="input-group rounded">
+                            <input class="form-control" placeholder="Поиск" name="search" required>
+                            <button type="submit" class="button btn">
+                                <i class="icon-search"></i>
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="button btn">Выйти</button>
+                </form>
+            </div>
         </div>
-        <div class="col d-flex justify-content-center">
-            <form th:action="@{/logout}" method="post">
-                <button type="submit" class="button">Выйти</button>
-            </form>
-        </div>
-    </div>
+    </nav>
 </div>
 
 <!-- UPLOADZONE -->
 <div th:fragment="uploadzone">
     <div class="container-fluid">
-        <form action="/files" class="dropzone border rounded" method="post" enctype="multipart/form-data">
-            <div class="dz-clickable dz-message dz-preview dz-file-preview text-center">
-                <i class="icon-upload-cloud-outline icon"></i>
-                <div class="text">Перетащите файлы или нажмите тут</div>
+        <form th:action="@{/upload}" th:method="post" class="dropzone border rounded"  enctype="multipart/form-data">
+            <div id="myDropzone" class="dropzone">
+                <div class="dz-message needsclick text-center">
+                    <i class="icon-upload-cloud-outline fa-2x"></i>
+                    <h3 class="fw-bold mb-1">Перетащите файлы или нажмите тут :)</h3>
+                </div>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- PREVIEWS -->
+<div th:fragment="previews-container">
+    <div class="container-fluid">
+        <div class="dropzone-previews border rounded"></div>
     </div>
 </div>
