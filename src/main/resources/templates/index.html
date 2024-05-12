@@ -2,41 +2,28 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:include="fragments/common :: head"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
 </head>
 <body>
-
 <th:block th:include="fragments/common :: userbar"/>
-<p id="message" class="error-message" th:if="${message}" th:text="${message}" style="display: block"></p>
-<div class="d-flex flex-column align-items-center">
+<div id="error-message" th:if="${message}">
+    <div class="error-message" th:text="${message}"></div>
+</div>
+<div class="container-fluid">
+    <div class="col bg-danger">
+        <div class="bg-warning">
+            <th:block th:include="fragments/common :: breadcrumb"/>
+        </div>
+        qweqwe
+    </div>
+</div>
+<div class="container-fluid">
     <th:block th:include="fragments/common :: uploadzone"/>
-    <button id="startUpload" class="button btn mt-1">Начать загрузку</button>
+</div>
+<div id="preview_template" style="display: none;">
+    <th:block th:include="fragments/common :: preview"/>
 </div>
 
-
-
-<th:block th:include="fragments/common :: previews-container"/>
-
-
-<script th:inline="javascript">
-    Dropzone.autoDiscover = false;
-    var myDropzone = new Dropzone("#myDropzone", {
-        url: "/upload",
-        addRemoveLinks: true,
-        autoProcessQueue: false,
-        uploadMultiple: true,
-        parallelUploads: 100,
-        maxFiles: 100,
-        previewsContainer: ".dropzone-previews",
-        init: function () {
-            this.on("sending", function (file, xhr, formData) {
-                formData.append("files", file, file.fullPath);
-            });
-        }
-    });
-    document.getElementById('startUpload').addEventListener('click', function () {
-        myDropzone.processQueue();
-    });
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
+<script th:src="@{/js/mydropzone.js}"></script>
 </body>
 </html>

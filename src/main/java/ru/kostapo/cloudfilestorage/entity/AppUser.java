@@ -22,5 +22,5 @@ public class AppUser {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    AppUserRole role = AppUserRole.GUEST;
+    AppUserRole role = AppUserRole.ROLE_GUEST;
 }

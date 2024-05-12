@@ -1,5 +1,5 @@
 <!-- HEAD -->
-<head th:fragment="head">
+<head th:fragment="head" xmlns:border-style="http://www.w3.org/1999/xhtml">
     <meta charset="UTF-8">
     <title>CloudFileStorage</title>
     <link th:href="@{/img/favicon.ico}" rel="icon" type="image/x-icon">
@@ -41,20 +41,60 @@
 <!-- UPLOADZONE -->
 <div th:fragment="uploadzone">
     <div class="container-fluid">
-        <form th:action="@{/upload}" th:method="post" class="dropzone border rounded"  enctype="multipart/form-data">
-            <div id="myDropzone" class="dropzone">
-                <div class="dz-message needsclick text-center">
-                    <i class="icon-upload-cloud-outline fa-2x"></i>
-                    <h3 class="fw-bold mb-1">Перетащите файлы или нажмите тут :)</h3>
+        <form th:action="@{/upload}" th:method="post" class="dropzone" enctype="multipart/form-data">
+            <div class="fallback">
+                <div id="myDropzone">
+                    <div class="dz-message needsclick text-center">
+                        <i class="icon-upload-cloud-outline fa-2x"></i>
+                        <h3 class="fw-bold">Перетащите файлы или нажмите тут :)</h3>
+                    </div>
                 </div>
             </div>
         </form>
+        <div class="container-fluid mt-3 mb-3">
+            <div class="btn-group d-grid gap-2 d-sm-flex justify-content-sm-between">
+                <button id="startUpload" class="btn button mb-1 mt-1">Загрузить все</button>
+                <button id="clearQueue" class="btn button mb-1 mt-1">Убрать все</button>
+            </div>
+            <div class="dropzone-previews"></div>
+        </div>
     </div>
 </div>
 
+<!-- BREADCRUMB -->
+<div th:fragment="breadcrumb">
+    <nav aria-label="Breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">link 11111111111</a></li>
+            <li class="breadcrumb-item"><a href="#">link 22222222222</a></li>
+            <li class="breadcrumb-item"><a href="#">link 33333333333</a></li>
+            <li class="breadcrumb-item active">link 44444444444</li>
+        </ol>
+    </nav>
+</div>
+
 <!-- PREVIEWS -->
-<div th:fragment="previews-container">
-    <div class="container-fluid">
-        <div class="dropzone-previews border rounded"></div>
+<div th:fragment="preview">
+    <div class="dz-preview border rounded mb-1 mt-1 row">
+        <div class="dz-details">
+            <div class="row">
+                <div class="col-7 col-sm-8 dz-filename"><span data-dz-name></span></div>
+                <div class="col-3 col-sm-2 dz-size text-center" data-dz-size></div>
+                <div class="col-2 col-sm-2 text-center">
+                    <a href="javascript:;" class="dz-remove" data-dz-remove>
+                        <strong class="d-none d-sm-inline">УБРАТЬ</strong>
+                        <i class="d-inline d-sm-none icon-cancel"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="dz-progress">
+                <span class="dz-upload" data-dz-uploadprogress></span>
+            </div>
+            <div class="dz-error-message text-center text-danger">
+                <small data-dz-errormessage></small>
+            </div>
+        </div>
     </div>
 </div>

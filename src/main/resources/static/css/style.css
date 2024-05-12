@@ -157,6 +157,7 @@ body {
     border-color: rgb(28, 30, 33);
     background-color: rgb(52, 56, 61);
 }
+
 .form-control:focus {
     color: rgb(28, 30, 33);
     border-color: rgb(0, 126, 165);
@@ -168,4 +169,90 @@ body {
     color: rgb(28, 30, 33);
     background-color: rgb(52, 56, 61);
 }
+
+.dropzone {
+    border: 3px dashed rgb(28, 30, 33) !important;
+    border-radius: 10px !important;
+    text-align: center !important;
+}
+
+.dropzone:hover {
+    border-color: rgb(0, 126, 165) !important;
+    box-shadow: 0 0 10px rgb(0, 126, 165) !important;
+}
+
+.dropzone-previews {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.dz-preview {
+    border: 1px solid rgb(28, 30, 33) !important;
+    border-radius: 10px !important;
+    display: flex;
+    flex-direction: row;
+}
+
+.dz-image {
+    margin-right: 10px;
+}
+
+.dz-filename {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.dz-size {
+    font-size: 14px;
+}
+
+.dz-error-message {
+    color: red;
+}
+
+.dz-remove {
+    text-decoration: none;
+    color: rgb(28, 30, 33);
+}
+
+.dz-remove:hover {
+    color: red;
+    box-shadow: 0 1px 3px red;
+}
+
+.dz-filename {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dz-progress {
+    background: rgb(28, 30, 33);
+    height: 3px;
+    width: 100%;
+    position: relative;
+}
+
+.dz-upload {
+    display: inline-block;
+    height: 100%;
+    background: rgb(0, 126, 165);
+    position: absolute;
+    left: 0;
+}
+
+.breadcrumb a {
+    color: #333; /* Цвет текста ссылок */
+    text-decoration: none; /* Убираем подчеркивание */
+}
+
+.breadcrumb a:hover {
+    color: #007bff; /* Цвет текста при наведении */
+}
+
+.breadcrumb .active {
+    color: green; /* Цвет активной ссылки */
+}
+
 

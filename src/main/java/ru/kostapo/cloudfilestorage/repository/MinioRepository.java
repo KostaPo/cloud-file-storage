@@ -1,11 +1,10 @@
 package ru.kostapo.cloudfilestorage.repository;
 
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
-import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
+import io.minio.*;
 import io.minio.errors.*;
+import io.minio.messages.Item;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -15,8 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedList;
+import java.util.List;
 
 @Log4j2
+@RequiredArgsConstructor
 @Repository
 public class MinioRepository {
 
@@ -24,10 +26,6 @@ public class MinioRepository {
     private String bucketName;
 
     private final MinioClient minioClient;
-
-    public MinioRepository(MinioClient minioClient) {
-        this.minioClient = minioClient;
-    }
 
     @PostConstruct
     public void createAppRootBucket() {
@@ -44,23 +42,50 @@ public class MinioRepository {
         }
     }
 
-    public void uploadFile(MultipartFile file) {
+    public void uploadFile(String username, MultipartFile file) {
         try (InputStream stream = file.getInputStream()) {
             minioClient.putObject(PutObjectArgs.builder()
                     .stream(stream, file.getSize(), -1)
                     .bucket(bucketName)
-                    .object("test/" + file.getOriginalFilename())
+                    .object(username + "/" + file.getOriginalFilename())
                     .build());
             log.info("correct upload file '{}' ", file.getOriginalFilename());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
-//        String originalFilename = file.getOriginalFilename();
-//        assert originalFilename != null;
-//        String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-//        long fileSize = file.getSize();
-//        log.info("Original filename: " + originalFilename);
-//        log.info("File extension: " + fileExtension);
-//        log.info("File size: " + fileSize);}
+
+    public void getAll(String userName) {
+        try {
+            ListObjectsArgs args = ListObjectsArgs.builder()
+                    .bucket(bucketName)
+                    .prefix(userName)
+                    .recursive(true)
+                    .build();
+            Iterable<Result<Item>> results = minioClient.listObjects(args);
+            List<String> fileList = new LinkedList<>();
+            List<String> directoryList = new LinkedList<>();
+
+            for (Result<Item> result : results) {
+                Item item = result.get();
+                if (item.isDir()) {
+                    directoryList.add(item.objectName());
+                } else {
+                    fileList.add(item.objectName());
+                }
+            }
+
+            System.out.println("Files:");
+            for (String file : fileList) {
+                System.out.println(file);
+            }
+
+            System.out.println("\nDirectories:");
+            for (String directory : directoryList) {
+                System.out.println(directory);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

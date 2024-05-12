@@ -33,16 +33,15 @@ public class UserServiceImpl implements UserService {
         AppUser user = new AppUser();
         user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setRole(AppUserRole.USER);
+        user.setRole(AppUserRole.ROLE_USER);
         userRepository.save(user);
-
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         AppUser user = userRepository.findAppUserByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User with username = " + username + " not exist!"));
-        List<GrantedAuthority> roles = List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+        List<GrantedAuthority> roles = List.of(new SimpleGrantedAuthority(user.getRole().name()));
         log.info("load UserDetails username:" + username + " role:" + user.getRole().name() + " in user service");
         return new User(user.getUsername(), user.getPassword(), roles);
     }

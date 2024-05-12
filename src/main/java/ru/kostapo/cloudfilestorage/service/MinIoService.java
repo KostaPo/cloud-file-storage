@@ -1,18 +1,13 @@
 package ru.kostapo.cloudfilestorage.service;
 
-import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.kostapo.cloudfilestorage.repository.MinioRepository;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
 @Service
 @RequiredArgsConstructor
-public class FileServiceImpl implements FileService {
+public class MinIoService implements S3Service {
 
     private final MinioRepository minioRepository;
 

@@ -1,7 +1,11 @@
 package ru.kostapo.cloudfilestorage.exception;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -11,25 +15,31 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.NestedServletException;
 import ru.kostapo.cloudfilestorage.entity.dto.UserReqDto;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @Log4j2
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
-    public String handleMaxUploadSizeExceededException(@AuthenticationPrincipal User user,
-                                                       MaxUploadSizeExceededException ex,
-                                                       Model model) {
-        model.addAttribute("user", user);
-        model.addAttribute("message", "Превышен максимально допустимый размер файла!");
+    public ResponseEntity<Map<String, String>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         log.error("MaxUploadSizeExceededException: " + ex.getMessage());
-        return "index";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Connection", "close");
+        Map<String, String> response = new HashMap<>();
+        response.put("message", String.format("Размер запроса больше %s мб!", 1000));
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                .headers(headers)
+                .body(response);
     }
+
 
     @ExceptionHandler(NonValidConstraintException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
