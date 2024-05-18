@@ -7,10 +7,13 @@
 <div id="auth_group_wrapper">
     <div class="title fw-bold text-center">Вход</div>
     <form method="post" th:action="@{/login}" th:object="${userDto}" id="signin">
-        <input type="text" id="username" th:field="*{username}" placeholder="username" required />
-        <input type="password" id="password" th:field="*{password}" placeholder="password" required />
+        <input type="text" id="username" th:field="*{username}" placeholder="username" required/>
+        <input type="password" id="password" th:field="*{password}" placeholder="password" required/>
         <button type="submit">&#xf0da;</button>
         <div class="text-center">
+            <input type="checkbox" id="remember-me" name="remember-me" />
+            <label for="remember-me"></label>
+            <td><strong>Запомнить?</strong></td>
             <p>Нет аккаунта? <a th:href="@{/registration}" class="text-dark">Зарегистрируйтесь</a></p>
             <div style="color: rgb(0, 126, 165)" th:if="${logout}">Вы вышли из системы!</div>
             <div style="color: red" th:if="${errors}">Проверьте логин или пароль!</div>

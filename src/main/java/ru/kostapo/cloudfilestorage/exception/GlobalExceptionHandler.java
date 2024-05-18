@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Connection", "close");
         Map<String, String> response = new HashMap<>();
-        response.put("message", String.format("Размер запроса больше %s мб!", 1000));
+        response.put("message", String.format("Размер запроса больше %s мб!", 100));
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
                 .headers(headers)
                 .body(response);

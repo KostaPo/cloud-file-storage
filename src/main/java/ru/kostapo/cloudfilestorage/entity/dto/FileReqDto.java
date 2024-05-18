@@ -4,9 +4,8 @@ import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
-public class FileResDto {
-    String filename;
-    String size;
-    String path;
+public class FileReqDto {
+    String holder;
+    String fullPath;
     MultipartFile file;
 }

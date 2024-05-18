@@ -60,6 +60,9 @@ public class SecurityConfiguration {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll())
+                .rememberMe((rememberMe) -> rememberMe
+                        .key("VeryUniqueAndSecretKey")
+                        .tokenValiditySeconds(1800))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .build();

@@ -5,10 +5,15 @@ var previewTemplate = document.querySelector('#preview_template').innerHTML;
 
 var myDropzone = new Dropzone("#myDropzone", {
     url: "/upload",
-    paramName: function() {return "data";},
+    renameFile: function (file) {
+        return file.fullPath;
+    },
+    paramName: function () {
+        return "data";
+    },
     uploadMultiple: true,
     autoProcessQueue: false,
-    maxFilesize: 1024,
+    maxFilesize: 100,
     maxFiles: 100,
     parallelUploads: 100,
     dictFileTooBig: "Размер файла больше {{maxFilesize}} мб!",
@@ -16,7 +21,7 @@ var myDropzone = new Dropzone("#myDropzone", {
     previewTemplate: previewTemplate
 });
 
-myDropzone.on("sendingmultiple", function(files, xhr, formData) {
+myDropzone.on("sendingmultiple", function (files, xhr, formData) {
     formData.append('data', JSON.stringify(files));
 });
 
@@ -49,6 +54,7 @@ myDropzone.on("removedfile", function () {
 document.getElementById('startUpload').addEventListener('click', function () {
     myDropzone.processQueue();
 });
+
 document.getElementById('clearQueue').addEventListener('click', function () {
     myDropzone.removeAllFiles();
 });
