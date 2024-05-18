@@ -6,15 +6,18 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: java-app
+    ports:
+      - "8080:8080/tcp"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://database:5432/DataCloud"
       SPRING_DATASOURCE_USERNAME: "usr"
       SPRING_DATASOURCE_PASSWORD: "pwd"
+      MINIO_CLIENT_ENDPOINT: "http://minio:9000/"
       MINIO_CLIENT_USER: "user"
       MINIO_CLIENT_PASSWORD: "password"
-      MINIO_CLIENT_ENDPOINT: "http://minio:9000"
-    ports:
-      - "8080:8080/tcp"
+      REDIS_SERVICE_PORT: "6379"
+      REDIS_SERVICE_HOST: "redis"
+      SPRING_REDIS_PASSWORD: "pwd"
     volumes:
       - ./app_logs:/etc/java/logs
     restart: unless-stopped
@@ -23,42 +26,59 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
   database:
     image: postgres:15
     container_name: postgres
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: "usr"
-      POSTGRES_PASSWORD: "usr"
+      POSTGRES_PASSWORD: "pwd"
       POSTGRES_DB: "DataCloud"
     volumes:
-      - ./pg_logs:/var/lib/postgresql/data
+      - ./pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -d DataCloud -U usr" ]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -d DataCloud -U usr"]
+      interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
     restart: unless-stopped
 
   minio:
     image: minio/minio
     container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
     environment:
       MINIO_ROOT_USER: user
       MINIO_ROOT_PASSWORD: password
     command: server --console-address ":9001" /data
     healthcheck:
       test: [ "CMD-SHELL", "mc ready local"]
-      interval: 30s
+      interval: 10s
       timeout: 5s
       retries: 3
-    volumes:
-      - ./minio_data:/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass pwd
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli -a pwd ping | grep PONG" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
 
 volumes:
   app_logs:
     driver: locals
-  pg_logs:
-    driver: local
-  minio_data:
+  pg_data:
     driver: local
