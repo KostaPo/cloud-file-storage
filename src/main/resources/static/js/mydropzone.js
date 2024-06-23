@@ -25,7 +25,10 @@ myDropzone.on("sendingmultiple", function (files, xhr, formData) {
     formData.append('data', JSON.stringify(files));
 });
 
-myDropzone.on("success", function (file) {
+myDropzone.on("success", function (file, response) {
+    var data = document.getElementById("data");
+    data.style.display = "block";
+    data.innerHTML = response;
     this.removeFile(file);
 });
 

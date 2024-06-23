@@ -9,13 +9,17 @@
     <div class="error-message" th:text="${message}"></div>
 </div>
 <div class="container-fluid">
-    <div class="col bg-danger">
-        <div class="bg-warning">
-            <th:block th:include="fragments/common :: breadcrumb"/>
+    <div class="bg-warning">
+        <th:block th:include="fragments/common :: breadcrumb"/>
+    </div>
+    <div class="data-container">
+        <div id="data">
+            <div th:replace="~{fragments/common :: itemsList}"></div>
         </div>
-        qweqwe
     </div>
 </div>
+
+
 <div class="container-fluid">
     <th:block th:include="fragments/common :: uploadzone"/>
 </div>

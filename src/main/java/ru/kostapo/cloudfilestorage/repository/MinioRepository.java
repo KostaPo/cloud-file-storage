@@ -9,12 +9,14 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
+import ru.kostapo.cloudfilestorage.exception.StorageException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
@@ -38,11 +40,11 @@ public class MinioRepository {
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
                  NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
                  InvalidKeyException e) {
-            throw new RuntimeException("Storage service doesn't answer");
+            throw new RuntimeException("Storage service can't create root bucket");
         }
     }
 
-    public void uploadFile(String username, MultipartFile file) {
+    public void uploadFile(String username, String dirPath, MultipartFile file) {
         try (InputStream stream = file.getInputStream()) {
             minioClient.putObject(PutObjectArgs.builder()
                     .stream(stream, file.getSize(), -1)
@@ -50,42 +52,49 @@ public class MinioRepository {
                     .object(username + "/" + file.getOriginalFilename())
                     .build());
             log.info("correct upload file '{}' ", file.getOriginalFilename());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
+                 NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
+                 InvalidKeyException e) {
+            throw new StorageException("Storage service can't upload file");
         }
     }
 
-    public void getAll(String userName) {
+    public void uploadFolder(String username, String dirPath, String dirName) {
         try {
-            ListObjectsArgs args = ListObjectsArgs.builder()
-                    .bucket(bucketName)
-                    .prefix(userName)
-                    .recursive(true)
-                    .build();
-            Iterable<Result<Item>> results = minioClient.listObjects(args);
-            List<String> fileList = new LinkedList<>();
-            List<String> directoryList = new LinkedList<>();
-
-            for (Result<Item> result : results) {
-                Item item = result.get();
-                if (item.isDir()) {
-                    directoryList.add(item.objectName());
-                } else {
-                    fileList.add(item.objectName());
-                }
-            }
-
-            System.out.println("Files:");
-            for (String file : fileList) {
-                System.out.println(file);
-            }
-
-            System.out.println("\nDirectories:");
-            for (String directory : directoryList) {
-                System.out.println(directory);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            minioClient.putObject(
+                    PutObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(username + "/")
+                            .stream(new ByteArrayInputStream(new byte[]{}), 0, -1)
+                            .build());
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
+                 NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
+                 InvalidKeyException e) {
+            throw new StorageException("Storage service can't upload folder");
         }
+    }
+
+    public List<Item> getAllByPath(String userName, String path) {
+            Iterable<Result<Item>> results = minioClient.listObjects(
+                    ListObjectsArgs.builder()
+                            .bucket(bucketName)
+                            .prefix(userName + "/")
+                            .recursive(false)
+                            .build());
+            return extractItems(results);
+    }
+
+    private List<Item> extractItems(Iterable<Result<Item>> results) {
+        List<Item> objectsList = new ArrayList<>();
+        for (Result<Item> result : results) {
+            try {
+                objectsList.add(result.get());
+            } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
+                     NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
+                     InvalidKeyException e) {
+                throw new StorageException("Can't extract items");
+            }
+        }
+        return objectsList;
     }
 }

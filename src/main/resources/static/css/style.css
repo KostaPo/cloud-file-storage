@@ -273,3 +273,57 @@ input[type="checkbox"]:checked + label {
     box-shadow: 0 0 10px rgb(0, 126, 165);
     border: 1px solid rgb(28, 30, 33);
 }
+
+.item-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+@media (max-width: 576px) {
+    .item-icon {
+        font-size: 38px;
+    }
+    .item-action {
+        font-size: 20px;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    .item-icon {
+        font-size: 38px;
+    }
+    .item-action {
+        font-size: 28px;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    .item-icon {
+        font-size: 48px;
+    }
+    .item-action {
+        font-size: 30px;
+    }
+}
+
+@media (min-width: 993px) {
+    .item-icon {
+        font-size: 64px;
+    }
+    .item-action {
+        font-size: 34px;
+    }
+}
+.delete-icon-action:hover {
+    color: red;
+}
+
+.edit-icon-action:hover {
+    color: blue;
+}
+
+.download-icon-action:hover {
+    color: green;
+}

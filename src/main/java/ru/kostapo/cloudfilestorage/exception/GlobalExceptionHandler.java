@@ -28,16 +28,20 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(StorageException.class)
+    public ResponseEntity<Map<String, String>> handleStorageException(StorageException ex) {
+        log.error("StorageException: " + ex.getMessage());
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<Map<String, String>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         log.error("MaxUploadSizeExceededException: " + ex.getMessage());
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Connection", "close");
         Map<String, String> response = new HashMap<>();
         response.put("message", String.format("Размер запроса больше %s мб!", 100));
-        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                .headers(headers)
-                .body(response);
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(response);
     }
 
 
