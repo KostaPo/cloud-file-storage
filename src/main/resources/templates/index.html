@@ -9,10 +9,8 @@
     <div class="error-message" th:text="${message}"></div>
 </div>
 <div class="container-fluid">
-    <div class="bg-warning">
-        <th:block th:include="fragments/common :: breadcrumb"/>
-    </div>
-    <div class="data-container">
+    <th:block th:include="fragments/common :: breadcrumb"/>
+    <div class="data-container scrollable">
         <div id="data">
             <div th:replace="~{fragments/common :: itemsList}"></div>
         </div>

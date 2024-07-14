@@ -14,7 +14,7 @@
     <nav class="navbar navbar-expand-sm">
         <div class="container-fluid">
             <div class="fs-3">
-                <span class="fw-bold" th:text="'Привет, ' + ${user.getUsername()} + '!'"></span>
+                <span class="fw-bold" th:text="'Привет , ' + ${user.getUsername()} + '!'"></span>
             </div>
             <button class="navbar-toggler button btn" data-bs-toggle="collapse" data-bs-target="#mynavbar">
                 <i class="icon-menu icon"></i>
@@ -63,12 +63,22 @@
 
 <!-- BREADCRUMB -->
 <div th:fragment="breadcrumb">
-    <nav aria-label="Breadcrumb">
+    <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="#">link 11111111111</a></li>
-            <li class="breadcrumb-item"><a href="#">link 22222222222</a></li>
-            <li class="breadcrumb-item"><a href="#">link 33333333333</a></li>
-            <li class="breadcrumb-item active">link 44444444444</li>
+            <li class="breadcrumb-item home-item"><a th:href="@{/}">Главная</a></li>
+            <th:block th:if="${!#maps.isEmpty(breadcrumbs.directoryPath)}">
+                <li th:if="${#maps.size(breadcrumbs.directoryPath) > 1}" class="breadcrumb-item ellipsis-item">
+                    <a th:href="@{/(path=${breadcrumbs.directoryPath.values().toArray()[#maps.size(breadcrumbs.directoryPath) - 2]})}"
+                       class="ellipsis">...</a>
+                </li>
+                <th:block th:each="entry, iterStat : ${breadcrumbs.directoryPath}">
+                    <li th:class="${'breadcrumb-item ' + (iterStat.last ? ' active last-item' : ' middle-item')}"
+                        class="wrapped-text">
+                        <a th:if="${!iterStat.last}" th:href="@{/(path=${entry.value})}" th:text="${entry.key}"></a>
+                        <span th:if="${iterStat.last}" th:text="${entry.key}"></span>
+                    </li>
+                </th:block>
+            </th:block>
         </ol>
     </nav>
 </div>
@@ -104,25 +114,38 @@
     <div class="item-container border border-black rounded">
         <div class="container">
             <div class="row">
-                <div class="col-9 d-flex flex-column align-items-center">
-                    <div class="item-icon" th:if="${item.itIsDir}"><i class="icon-folder-empty"></i></div>
-                    <div class="item-icon" th:unless="${item.itIsDir}"><i class="icon-doc-text"></i></div>
-                </div>
-                <div class="col-3 d-flex flex-column justify-content-between align-items-center">
-                    <div class="row d-flex justify-content-center w-auto">
-                        <i class="item-action delete-icon-action fa fa-times-circle"></i>
-                    </div>
-                    <div class="row d-flex justify-content-center w-auto">
-                        <i class="item-action edit-icon-action fa fa-edit"></i>
-                    </div>
-                    <div class="row d-flex justify-content-center w-auto">
-                        <i class="item-action download-icon-action fa fa-download"></i>
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button class="action-icons-toggler toggle-actions" data-bs-toggle="collapse" th:data-bs-target="'#actionIcons-' + ${item.hashCode()}" aria-expanded="false" aria-controls="actionIcons">
+                            <i class="item-action fa fa-ellipsis-v"></i>
+                        </button>
+                        <div th:id="'actionIcons-' + ${item.hashCode()}" class="collapse w-100">
+                            <div class="d-flex justify-content-around">
+                                <div>
+                                    <i class="item-action delete-icon-action fa fa-times-circle"></i>
+                                </div>
+                                <div>
+                                    <i class="item-action edit-icon-action fa fa-edit"></i>
+                                </div>
+                                <div>
+                                    <i class="item-action download-icon-action fa fa-download"></i>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="item-name">
-                    <span th:text="${item.objectName}" style="font-weight: bold;"></span>
+                <div class="col-12 d-flex justify-content-center">
+                    <div class="item-icon" th:if="${item.itIsDir}"><i class="icon-folder-empty"></i></div>
+                    <div class="item-icon" th:unless="${item.itIsDir}"><i class="icon-doc-text"></i></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="wrapped-text text-center">
+                        <span th:text="${item.objectName}" style="font-weight: bold;"></span>
+                    </div>
                 </div>
             </div>
         </div>

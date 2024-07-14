@@ -152,6 +152,23 @@ body {
     border: 1px solid rgb(28, 30, 33) !important;
 }
 
+.action-icons-toggler {
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.action-icons-toggler .fa-ellipsis-v {
+    color: rgb(28, 30, 33);
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.action-icons-toggler:hover .fa-ellipsis-v {
+    color: rgb(0, 126, 165);
+    text-shadow: 1px 1px 2px rgb(0, 126, 165);
+}
+
 .form-control {
     color: rgb(28, 30, 33);
     border-color: rgb(28, 30, 33);
@@ -168,6 +185,12 @@ body {
 .form-control::placeholder, .form-control:focus::placeholder {
     color: rgb(28, 30, 33);
     background-color: rgb(52, 56, 61);
+}
+
+.data-container {
+    border: 3px solid rgb(28, 30, 33);
+    border-radius: 5px;
+    margin-bottom: 3px;
 }
 
 .dropzone {
@@ -242,19 +265,6 @@ body {
     left: 0;
 }
 
-.breadcrumb a {
-    color: #333; /* Цвет текста ссылок */
-    text-decoration: none; /* Убираем подчеркивание */
-}
-
-.breadcrumb a:hover {
-    color: #007bff; /* Цвет текста при наведении */
-}
-
-.breadcrumb .active {
-    color: green; /* Цвет активной ссылки */
-}
-
 
 input[type="checkbox"] {
     display: none;
@@ -274,11 +284,6 @@ input[type="checkbox"]:checked + label {
     border: 1px solid rgb(28, 30, 33);
 }
 
-.item-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
 
 
 @media (max-width: 576px) {
@@ -316,6 +321,15 @@ input[type="checkbox"]:checked + label {
         font-size: 34px;
     }
 }
+
+.wrapped-text {
+    display: inline-block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .delete-icon-action:hover {
     color: red;
 }
@@ -326,4 +340,89 @@ input[type="checkbox"]:checked + label {
 
 .download-icon-action:hover {
     color: green;
+}
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    list-style: none;
+    margin-bottom: 0;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    display: inline-block;
+    content: "/";
+}
+
+.home-item {
+    flex-shrink: 0;
+}
+
+.ellipsis-item {
+    flex-shrink: 0;
+    display: none;
+}
+
+.middle-item {
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.last-item {
+    flex-shrink: 0;
+}
+
+.breadcrumb-item a {
+    color: rgb(28, 30, 33);
+    text-decoration: none;
+}
+
+.breadcrumb a {
+    text-decoration: none; /* Убираем подчеркивание */
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb .active {
+    color: rgb(0, 126, 165); /* Цвет активной ссылки */
+}
+
+@media (max-width: 576px) {
+    .middle-item {
+        display: none;
+    }
+
+    .ellipsis-item {
+        display: flex;
+    }
+}
+
+.scrollable {
+    overflow-y: auto;
+    height: 300px;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(28, 30, 33) transparent;
+}
+
+.scrollable::-webkit-scrollbar {
+    width: 3px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    background-color: rgb(28, 30, 33);
 }
