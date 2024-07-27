@@ -30,7 +30,7 @@ public class MainController {
                         Model model) {
         log.info("GET REQUEST on MAIN page with PATH {}", path);
         BreadcrumbsDto breadcrumbs = BreadcrumbsMapper.INSTANCE.mapToDto(path == null ? "" : path);
-        List<MinIoResObject> items = minIoService.getAllObjectsByPath(user.getUsername(), path);
+        List<MinIoResObject> items = minIoService.getAllObjectsByPath(user.getUsername(), path == null ? "" : path);
         model.addAttribute("user", user);
         model.addAttribute("breadcrumbs", breadcrumbs);
         model.addAttribute("items", items);

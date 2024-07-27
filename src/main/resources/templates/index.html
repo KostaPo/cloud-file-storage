@@ -9,7 +9,19 @@
     <div class="error-message" th:text="${message}"></div>
 </div>
 <div class="container-fluid">
-    <th:block th:include="fragments/common :: breadcrumb"/>
+    <div class="container-fluid">
+        <div class="row mb-1">
+            <div class="col-10">
+                <th:block th:include="fragments/common :: breadcrumb"/>
+            </div>
+            <div class="col-2">
+                <button type="button" class="button w-100 d-flex justify-content-center align-items-center"
+                        data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <i class="icon-folder-add"></i>
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="data-container scrollable">
         <div id="data">
             <div th:replace="~{fragments/common :: itemsList}"></div>
@@ -23,6 +35,29 @@
 </div>
 <div id="preview_template" style="display: none;">
     <th:block th:include="fragments/common :: preview"/>
+</div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel ">Создать папку</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form th:action="@{/folder/upload}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3"><label for="folderName" class="form-label">Введите название:</label>
+                        <input type="text" class="form-control" id="folderName" name="folderName" required>
+                        <input type="hidden" name="path" th:value="${breadcrumbs.currentPath}">
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="submit" class="btn btn-success">Отправить</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>

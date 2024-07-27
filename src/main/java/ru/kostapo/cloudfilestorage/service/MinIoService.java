@@ -34,4 +34,14 @@ public class MinIoService implements StorageService {
     public void uploadFolder(String username, String dirPath, String dirName) {
         minioRepository.uploadFolder(username, dirPath, dirName);
     }
+
+    @Override
+    public void removeFile(String username, String path) {
+        minioRepository.removeFile(username, path);
+    }
+
+    @Override
+    public void removeFolder(String username, String path) {
+        minioRepository.removeFolder(username, path);
+    }
 }

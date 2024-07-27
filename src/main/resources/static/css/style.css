@@ -284,12 +284,15 @@ input[type="checkbox"]:checked + label {
     border: 1px solid rgb(28, 30, 33);
 }
 
-
+.icon {
+    display: block; /* Если это иконка или картинка, это может помочь в управлении отступами */
+}
 
 @media (max-width: 576px) {
     .item-icon {
         font-size: 38px;
     }
+
     .item-action {
         font-size: 20px;
     }
@@ -299,6 +302,7 @@ input[type="checkbox"]:checked + label {
     .item-icon {
         font-size: 38px;
     }
+
     .item-action {
         font-size: 28px;
     }
@@ -308,6 +312,7 @@ input[type="checkbox"]:checked + label {
     .item-icon {
         font-size: 48px;
     }
+
     .item-action {
         font-size: 30px;
     }
@@ -317,6 +322,7 @@ input[type="checkbox"]:checked + label {
     .item-icon {
         font-size: 64px;
     }
+
     .item-action {
         font-size: 34px;
     }
@@ -328,6 +334,17 @@ input[type="checkbox"]:checked + label {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.item-action {
+    color: rgb(28, 30, 33);
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    background-color: transparent;
+    border: none;
 }
 
 .delete-icon-action:hover {
@@ -384,6 +401,7 @@ input[type="checkbox"]:checked + label {
 .breadcrumb-item a {
     color: rgb(28, 30, 33);
     text-decoration: none;
+    font-weight: bold;
 }
 
 .breadcrumb a {
@@ -395,7 +413,7 @@ input[type="checkbox"]:checked + label {
 }
 
 .breadcrumb .active {
-    color: rgb(0, 126, 165); /* Цвет активной ссылки */
+    color: rgb(0, 126, 165);
 }
 
 @media (max-width: 576px) {
@@ -425,4 +443,45 @@ input[type="checkbox"]:checked + label {
 
 .scrollable::-webkit-scrollbar-thumb {
     background-color: rgb(28, 30, 33);
+}
+
+.modal-title {
+    font-weight: bold;
+}
+
+.modal-content {
+    border: 3px solid rgb(28, 30, 33);
+    background-color: rgb(52, 56, 61);
+    font-weight: bold;
+}
+
+.modal-header, .modal-body, .modal-footer {
+    background-color: rgb(52, 56, 61);
+}
+
+.modal-header {
+    border-bottom: 2px solid rgb(28, 30, 33);
+}
+
+.modal-footer {
+    border-top: 2px solid rgb(28, 30, 33);
+}
+
+.modal-header, .modal-footer {
+    border-color: rgb(28, 30, 33);
+}
+
+.modal-body .form-label {
+    text-align: center;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.dir-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.dir-link:hover {
+    color: rgb(0, 126, 165);
 }

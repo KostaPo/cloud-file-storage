@@ -44,12 +44,12 @@ public class MinioRepository {
         }
     }
 
-    public void uploadFile(String username, String dirPath, MultipartFile file) {
+    public void uploadFile(String username, String path, MultipartFile file) {
         try (InputStream stream = file.getInputStream()) {
             minioClient.putObject(PutObjectArgs.builder()
                     .stream(stream, file.getSize(), -1)
                     .bucket(bucketName)
-                    .object(username + "/" + file.getOriginalFilename())
+                    .object(username + "/" + path + file.getOriginalFilename())
                     .build());
             log.info("correct upload file '{}' ", file.getOriginalFilename());
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
@@ -59,12 +59,12 @@ public class MinioRepository {
         }
     }
 
-    public void uploadFolder(String username, String dirPath, String dirName) {
+    public void uploadFolder(String username, String path, String name) {
         try {
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(bucketName)
-                            .object(username + "/")
+                            .object(username + "/" + path + name + "/")
                             .stream(new ByteArrayInputStream(new byte[]{}), 0, -1)
                             .build());
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
@@ -74,14 +74,50 @@ public class MinioRepository {
         }
     }
 
-    public List<Item> getAllByPath(String userName, String path) {
+    public void removeFile(String username, String path) {
+        try {
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(username + "/" + path)
+                            .build());
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
+                 NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
+                 InvalidKeyException e) {
+            throw new StorageException("Storage service can't remove file");
+        }
+    }
+
+    public void removeFolder(String username, String path) {
+        try {
             Iterable<Result<Item>> results = minioClient.listObjects(
                     ListObjectsArgs.builder()
                             .bucket(bucketName)
-                            .prefix(userName + "/")
-                            .recursive(false)
+                            .prefix(username + "/" + path)
+                            .recursive(true)
                             .build());
-            return extractItems(results);
+            for (Result<Item> result : results) {
+                Item item = result.get();
+                minioClient.removeObject(RemoveObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(item.objectName())
+                        .build());
+            }
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
+                 NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
+                 InvalidKeyException e) {
+            throw new StorageException("Storage service can't remove folder");
+        }
+    }
+
+    public List<Item> getAllByPath(String username, String path) {
+        Iterable<Result<Item>> results = minioClient.listObjects(
+                ListObjectsArgs.builder()
+                        .bucket(bucketName)
+                        .prefix(username + "/" + path)
+                        .recursive(false)
+                        .build());
+        return extractItems(results);
     }
 
     private List<Item> extractItems(Iterable<Result<Item>> results) {

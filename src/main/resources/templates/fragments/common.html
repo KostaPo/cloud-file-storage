@@ -14,7 +14,7 @@
     <nav class="navbar navbar-expand-sm">
         <div class="container-fluid">
             <div class="fs-3">
-                <span class="fw-bold" th:text="'Привет , ' + ${user.getUsername()} + '!'"></span>
+                <span class="fw-bold" th:text="'Привет, ' + ${user.getUsername()} + '!'"></span>
             </div>
             <button class="navbar-toggler button btn" data-bs-toggle="collapse" data-bs-target="#mynavbar">
                 <i class="icon-menu icon"></i>
@@ -41,7 +41,8 @@
 <!-- UPLOADZONE -->
 <div th:fragment="uploadzone">
     <div class="container-fluid">
-        <form th:action="@{/upload}" th:method="post" class="dropzone" enctype="multipart/form-data">
+        <form th:action="@{/file/upload}" th:method="post" class="dropzone" enctype="multipart/form-data">
+            <input type="hidden" name="currentPath" th:value="${breadcrumbs.currentPath}">
             <div class="fallback">
                 <div id="myDropzone">
                     <div class="dz-message needsclick text-center">
@@ -69,13 +70,14 @@
             <th:block th:if="${!#maps.isEmpty(breadcrumbs.directoryPath)}">
                 <li th:if="${#maps.size(breadcrumbs.directoryPath) > 1}" class="breadcrumb-item ellipsis-item">
                     <a th:href="@{/(path=${breadcrumbs.directoryPath.values().toArray()[#maps.size(breadcrumbs.directoryPath) - 2]})}"
-                       class="ellipsis">...</a>
+                       class="ellipsis" style="font-weight: bold;">...</a>
                 </li>
                 <th:block th:each="entry, iterStat : ${breadcrumbs.directoryPath}">
                     <li th:class="${'breadcrumb-item ' + (iterStat.last ? ' active last-item' : ' middle-item')}"
                         class="wrapped-text">
-                        <a th:if="${!iterStat.last}" th:href="@{/(path=${entry.value})}" th:text="${entry.key}"></a>
-                        <span th:if="${iterStat.last}" th:text="${entry.key}"></span>
+                        <a th:if="${!iterStat.last}" th:href="@{/(path=${entry.value})}" th:text="${entry.key}"
+                           style="font-weight: bold;"></a>
+                        <span th:if="${iterStat.last}" th:text="${entry.key}" style="font-weight: bold;"></span>
                     </li>
                 </th:block>
             </th:block>
@@ -116,38 +118,77 @@
             <div class="row">
                 <div class="col-12">
                     <div class="d-flex justify-content-between align-items-center">
-                        <button class="action-icons-toggler toggle-actions" data-bs-toggle="collapse" th:data-bs-target="'#actionIcons-' + ${item.hashCode()}" aria-expanded="false" aria-controls="actionIcons">
+                        <button class="action-icons-toggler toggle-actions" data-bs-toggle="collapse"
+                                th:data-bs-target="'#actionIcons-' + ${item.hashCode()}" aria-expanded="false"
+                                aria-controls="actionIcons">
                             <i class="item-action fa fa-ellipsis-v"></i>
                         </button>
                         <div th:id="'actionIcons-' + ${item.hashCode()}" class="collapse w-100">
                             <div class="d-flex justify-content-around">
                                 <div>
-                                    <i class="item-action delete-icon-action fa fa-times-circle"></i>
+                                    <form th:action="@{/file/remove}" method="post" th:if="${!item.itIsDir}">
+                                        <input type="hidden" name="path" th:value="${breadcrumbs.currentPath}"/>
+                                        <input type="hidden" name="objectName" th:value="${item.objectName}"/>
+                                        <input type="hidden" name="_method" value="delete"/>
+                                        <button type="submit" class="item-action delete-icon-action" title="Delete">
+                                            <i class="fa fa-times-circle"></i>
+                                        </button>
+                                    </form>
+                                    <form th:action="@{/folder/remove}" method="post" th:if="${item.itIsDir}">
+                                        <input type="hidden" name="path" th:value="${breadcrumbs.currentPath}"/>
+                                        <input type="hidden" name="objectName" th:value="${item.objectName}"/>
+                                        <input type="hidden" name="_method" value="delete"/>
+                                        <button type="submit" class="item-action delete-icon-action" title="Delete">
+                                            <i class="fa fa-times-circle"></i>
+                                        </button>
+                                    </form>
                                 </div>
                                 <div>
-                                    <i class="item-action edit-icon-action fa fa-edit"></i>
+                                    <a th:href="@{/path_to_edit_method}" class="item-action edit-icon-action"
+                                       title="Edit">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
                                 </div>
                                 <div>
-                                    <i class="item-action download-icon-action fa fa-download"></i>
+                                    <a th:href="@{/path_to_download_method}" class="item-action download-icon-action"
+                                       title="Download">
+                                        <i class="fa fa-download"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-12 d-flex justify-content-center">
-                    <div class="item-icon" th:if="${item.itIsDir}"><i class="icon-folder-empty"></i></div>
-                    <div class="item-icon" th:unless="${item.itIsDir}"><i class="icon-doc-text"></i></div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="wrapped-text text-center">
-                        <span th:text="${item.objectName}" style="font-weight: bold;"></span>
+            <a th:if="${item.itIsDir}" th:href="@{/(path=${breadcrumbs.currentPath + item.objectName + '/'})}"
+               class="dir-link">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-center">
+                        <div class="item-icon"><i class="icon-folder-empty"></i></div>
                     </div>
                 </div>
-            </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="wrapped-text text-center">
+                            <span th:text="${item.objectName}" style="font-weight: bold;"></span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <th:block th:unless="${item.itIsDir}">
+                <div class="row">
+                    <div class="col-12 d-flex justify-content-center">
+                        <div class="item-icon"><i class="icon-doc-text"></i></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="wrapped-text text-center">
+                            <span th:text="${item.objectName}" style="font-weight: bold;"></span>
+                        </div>
+                    </div>
+                </div>
+            </th:block>
         </div>
     </div>
 </div>

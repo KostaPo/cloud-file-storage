@@ -4,7 +4,7 @@ document.getElementById("clearQueue").style.display = "none";
 var previewTemplate = document.querySelector('#preview_template').innerHTML;
 
 var myDropzone = new Dropzone("#myDropzone", {
-    url: "/upload",
+    url: "file/upload",
     renameFile: function (file) {
         return file.fullPath;
     },
@@ -23,6 +23,8 @@ var myDropzone = new Dropzone("#myDropzone", {
 
 myDropzone.on("sendingmultiple", function (files, xhr, formData) {
     formData.append('data', JSON.stringify(files));
+    let currentPath = document.querySelector('input[name="currentPath"]').value;
+    formData.append('path', currentPath);
 });
 
 myDropzone.on("success", function (file, response) {

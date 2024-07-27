@@ -9,7 +9,11 @@ public interface StorageService {
 
     List<MinIoResObject> getAllObjectsByPath(String username, String path);
 
-    void uploadFiles(List<MinIoReqObject> filesList, String dirPath);
+    void uploadFiles(List<MinIoReqObject> filesList, String path);
 
-    void uploadFolder(String username, String dirPath, String dirName);
+    void uploadFolder(String username, String path, String name);
+
+    void removeFile(String username, String path);
+
+    void removeFolder(String username, String path);
 }
