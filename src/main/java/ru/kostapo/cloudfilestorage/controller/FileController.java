@@ -2,12 +2,14 @@ package ru.kostapo.cloudfilestorage.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import ru.kostapo.cloudfilestorage.entity.dto.BreadcrumbsDto;
 import ru.kostapo.cloudfilestorage.entity.dto.MinIoReqObject;
@@ -30,9 +32,9 @@ public class FileController {
 
     @PostMapping("/upload")
     public String uploadFiles(@AuthenticationPrincipal User user,
-                                         @RequestParam(value = "path", required = false) String path,
-                                         @RequestParam("data") MultipartFile[] files,
-                                         Model model) {
+                              @RequestParam(value = "path", required = false) String path,
+                              @RequestParam("data") MultipartFile[] files,
+                              Model model) {
 
         log.info("POST request on UPLOAD by user [{}]", user.getUsername());
         List<MinIoReqObject> dtoFiles = ObjectMapper.INSTANCE.multipartFilesToMinIoObjectList(user.getUsername(), files);

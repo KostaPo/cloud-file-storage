@@ -241,7 +241,7 @@ body {
 
 .dz-remove:hover {
     color: red;
-    box-shadow: 0 1px 3px red;
+    border: 1px solid red;
 }
 
 .dz-filename {
@@ -336,6 +336,25 @@ input[type="checkbox"]:checked + label {
     text-overflow: ellipsis;
 }
 
+.back-to-main-link {
+    color: rgb(28, 30, 33);
+    padding: 1px;
+    margin: 1px;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    border: 1px solid rgb(28, 30, 33);
+    border-radius: 5px;
+}
+
+.back-to-main-link:hover {
+    color: rgb(0, 126, 165);
+    border-color: rgb(0, 126, 165);
+    box-shadow: 0 0 10px rgb(0, 126, 165);
+}
+
+
+
 .item-action {
     color: rgb(28, 30, 33);
     padding: 0;
@@ -346,6 +365,7 @@ input[type="checkbox"]:checked + label {
     background-color: transparent;
     border: none;
 }
+
 
 .delete-icon-action:hover {
     color: red;

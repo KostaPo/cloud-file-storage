@@ -34,7 +34,6 @@ public class FolderController {
     }
 
 
-
     @DeleteMapping(value = "/remove")
     public String removeFolder(@AuthenticationPrincipal User user,
                                @RequestParam(value = "path", required = false) String path,

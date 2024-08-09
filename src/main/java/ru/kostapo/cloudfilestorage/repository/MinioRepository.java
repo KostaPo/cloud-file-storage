@@ -120,6 +120,36 @@ public class MinioRepository {
         return extractItems(results);
     }
 
+    public List<Item> getAllByUser(String username) {
+        List<Item> allUserItems = new ArrayList<>();
+        itemsRecursiveSearch(username, "", allUserItems);
+        return allUserItems;
+    }
+
+    private void itemsRecursiveSearch(String username, String path, List<Item> allItems) {
+        Iterable<Result<Item>> results = minioClient.listObjects(
+                ListObjectsArgs.builder()
+                        .bucket(bucketName)
+                        .prefix(username + "/" + path)
+                        .recursive(false)
+                        .build());
+
+        for (Result<Item> result : results) {
+            try {
+                Item item = result.get();
+                allItems.add(item);
+                if (item.isDir()) {
+                    String nextPath = item.objectName().substring(username.length() + 1);
+                    itemsRecursiveSearch(username, nextPath, allItems);
+                }
+            } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
+                     NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
+                     InvalidKeyException e) {
+                throw new StorageException("Storage service can't recursive search items");
+            }
+        }
+    }
+
     private List<Item> extractItems(Iterable<Result<Item>> results) {
         List<Item> objectsList = new ArrayList<>();
         for (Result<Item> result : results) {

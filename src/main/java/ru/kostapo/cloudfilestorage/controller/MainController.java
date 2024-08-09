@@ -36,5 +36,18 @@ public class MainController {
         model.addAttribute("items", items);
         return "index";
     }
+
+    @GetMapping(value = "/search")
+    public String search(@AuthenticationPrincipal User user,
+                         @RequestParam(required = false) String query,
+                         Model model) {
+        log.info("POST REQUEST on MAIN page with search query {}", query);
+        BreadcrumbsDto breadcrumbs = BreadcrumbsMapper.INSTANCE.mapToDto("");
+        List<MinIoResObject> items = minIoService.getAllObjectsBySearchQuery(user.getUsername(), query);
+        model.addAttribute("user", user);
+        model.addAttribute("breadcrumbs", breadcrumbs);
+        model.addAttribute("items", items);
+        return "search";
+    }
 }
   

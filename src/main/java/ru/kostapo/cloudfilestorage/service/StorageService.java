@@ -9,6 +9,8 @@ public interface StorageService {
 
     List<MinIoResObject> getAllObjectsByPath(String username, String path);
 
+    List<MinIoResObject> getAllObjectsBySearchQuery(String username, String query);
+
     void uploadFiles(List<MinIoReqObject> filesList, String path);
 
     void uploadFolder(String username, String path, String name);

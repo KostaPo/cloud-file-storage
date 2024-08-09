@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="fragments/common :: head"/>
+</head>
+<body>
+<th:block th:include="fragments/common :: userbar"/>
+<div id="error-message" th:if="${message}">
+    <div class="error-message" th:text="${message}"></div>
+</div>
+<div class="container-fluid">
+    <a th:href="@{/}" class="back-to-main-link">
+        <i class="fa fa-arrow-circle-left"> <strong>Назад</strong></i>
+    </a>
+    <strong>Результаты поиска:</strong>
+    <div class="data-container scrollable">
+        <div id="data">
+            <div th:if="${#lists.isEmpty(items)}" class="text-center">
+                <strong>НИЧЕГО НЕ НАЙДЕНО ☹</strong>
+            </div>
+            <div th:unless="${#lists.isEmpty(items)}" th:replace="~{fragments/common :: itemsList}"></div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.2/min/dropzone.min.js"></script>
+<script th:src="@{/js/mydropzone.js}"></script>
+</body>
+</html>

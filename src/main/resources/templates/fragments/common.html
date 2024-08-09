@@ -22,12 +22,14 @@
             <div class="collapse navbar-collapse px-2" id="mynavbar">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <div class="input-group rounded">
-                            <input class="form-control" placeholder="Поиск" name="search" required>
-                            <button type="submit" class="button btn">
-                                <i class="icon-search"></i>
-                            </button>
-                        </div>
+                        <form action="/search" method="get">
+                            <div class="input-group rounded">
+                                <input class="form-control" placeholder="Поиск" name="query" required>
+                                <button type="submit" class="button btn">
+                                    <i class="icon-search"></i>
+                                </button>
+                            </div>
+                        </form>
                     </li>
                 </ul>
                 <form th:action="@{/logout}" method="post">
@@ -127,7 +129,7 @@
                             <div class="d-flex justify-content-around">
                                 <div>
                                     <form th:action="@{/file/remove}" method="post" th:if="${!item.itIsDir}">
-                                        <input type="hidden" name="path" th:value="${breadcrumbs.currentPath}"/>
+                                        <input type="hidden" name="path" th:value="${item.fullPath}"/>
                                         <input type="hidden" name="objectName" th:value="${item.objectName}"/>
                                         <input type="hidden" name="_method" value="delete"/>
                                         <button type="submit" class="item-action delete-icon-action" title="Delete">
@@ -135,7 +137,7 @@
                                         </button>
                                     </form>
                                     <form th:action="@{/folder/remove}" method="post" th:if="${item.itIsDir}">
-                                        <input type="hidden" name="path" th:value="${breadcrumbs.currentPath}"/>
+                                        <input type="hidden" name="path" th:value="${item.fullPath}"/>
                                         <input type="hidden" name="objectName" th:value="${item.objectName}"/>
                                         <input type="hidden" name="_method" value="delete"/>
                                         <button type="submit" class="item-action delete-icon-action" title="Delete">

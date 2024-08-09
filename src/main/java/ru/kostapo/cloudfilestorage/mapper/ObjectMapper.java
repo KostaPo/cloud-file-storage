@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @Mapper
 public interface ObjectMapper {
     ObjectMapper INSTANCE = Mappers.getMapper(ObjectMapper.class);
+
     @Mapping(target = "holder", source = "username")
     @Mapping(target = "fullPath", source = "multipartFile.originalFilename")
     @Mapping(target = "file", source = "multipartFile")
@@ -27,12 +28,18 @@ public interface ObjectMapper {
     }
 
     @Mapping(target = "itIsDir", expression = "java(item.isDir())")
+    @Mapping(target = "fullPath", expression = "java(getObjectPath(item))")
     @Mapping(target = "objectName", expression = "java(getObjectName(item))")
     MinIoResObject itemToMinIoResObject(Item item);
 
     default String getObjectName(Item item) {
         String[] parts = item.objectName().split("/");
         return parts[parts.length - 1];
+    }
+
+    default String getObjectPath(Item item) {
+        String path = item.objectName().substring(item.objectName().indexOf('/') + 1);
+        return path.substring(0, path.lastIndexOf(getObjectName(item)));
     }
 
     default List<MinIoResObject> mapItemsToMinIoResObjects(List<Item> items) {
