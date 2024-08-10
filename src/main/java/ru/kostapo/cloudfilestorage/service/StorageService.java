@@ -15,7 +15,5 @@ public interface StorageService {
 
     void uploadFolder(String username, String path, String name);
 
-    void removeFile(String username, String path);
-
-    void removeFolder(String username, String path);
+    void deleteObject(String username, MinIoResObject object);
 }

@@ -128,16 +128,9 @@
                         <div th:id="'actionIcons-' + ${item.hashCode()}" class="collapse w-100">
                             <div class="d-flex justify-content-around">
                                 <div>
-                                    <form th:action="@{/file/remove}" method="post" th:if="${!item.itIsDir}">
-                                        <input type="hidden" name="path" th:value="${item.fullPath}"/>
-                                        <input type="hidden" name="objectName" th:value="${item.objectName}"/>
-                                        <input type="hidden" name="_method" value="delete"/>
-                                        <button type="submit" class="item-action delete-icon-action" title="Delete">
-                                            <i class="fa fa-times-circle"></i>
-                                        </button>
-                                    </form>
-                                    <form th:action="@{/folder/remove}" method="post" th:if="${item.itIsDir}">
-                                        <input type="hidden" name="path" th:value="${item.fullPath}"/>
+                                    <form th:action="@{/object/remove}" th:object="${object}" method="post">
+                                        <input type="hidden" name="itIsDir" th:value="${item.itIsDir}"/>
+                                        <input type="hidden" name="fullPath" th:value="${item.fullPath}"/>
                                         <input type="hidden" name="objectName" th:value="${item.objectName}"/>
                                         <input type="hidden" name="_method" value="delete"/>
                                         <button type="submit" class="item-action delete-icon-action" title="Delete">
@@ -146,8 +139,8 @@
                                     </form>
                                 </div>
                                 <div>
-                                    <a th:href="@{/path_to_edit_method}" class="item-action edit-icon-action"
-                                       title="Edit">
+                                    <a href="#" class="item-action edit-icon-action" title="Edit" data-bs-toggle="modal"
+                                       data-bs-target="#modalEdit">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </div>
@@ -205,3 +198,5 @@
         </div>
     </div>
 </div>
+
+

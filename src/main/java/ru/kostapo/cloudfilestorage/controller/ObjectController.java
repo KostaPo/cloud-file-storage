@@ -6,10 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.kostapo.cloudfilestorage.entity.dto.BreadcrumbsDto;
 import ru.kostapo.cloudfilestorage.entity.dto.MinIoReqObject;
@@ -25,13 +22,13 @@ import java.util.List;
 @Log4j2
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/file")
-public class FileController {
+@RequestMapping("/object")
+public class ObjectController {
 
     private final MinIoService minIoService;
 
-    @PostMapping("/upload")
-    public String uploadFiles(@AuthenticationPrincipal User user,
+    @PostMapping("/upload/file")
+    public String uploadFile(@AuthenticationPrincipal User user,
                               @RequestParam(value = "path", required = false) String path,
                               @RequestParam("data") MultipartFile[] files,
                               Model model) {
@@ -47,13 +44,31 @@ public class FileController {
         return "fragments/common :: itemsList";
     }
 
-    @DeleteMapping(value = "/remove")
-    public String removeFile(@AuthenticationPrincipal User user,
-                             @RequestParam(value = "path", required = false) String path,
-                             @RequestParam(value = "objectName", required = false) String objectName) {
-        minIoService.removeFile(user.getUsername(), path + objectName);
-        log.info("remove file [{}] on path [{}]", objectName, path);
+    @PostMapping("/upload/folder")
+    public String uploadFolder(@AuthenticationPrincipal User user,
+                               @RequestParam(value = "path", required = false) String path,
+                               @RequestParam(value = "folderName") String folderName) {
+        log.info("POST request on UPLOAD by user [{}]", user.getUsername());
+        minIoService.uploadFolder(user.getUsername(), path, folderName);
+        log.info("create folder on path [{}] with name [{}]",
+                String.join("/", user.getUsername(), path), folderName);
         return "redirect:/?path=" + URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
-}
 
+    @DeleteMapping(value = "/delete")
+    public String deleteObject(@AuthenticationPrincipal User user,
+                               @ModelAttribute MinIoResObject object) {
+        log.info("delete object [{}] by path [{}]", object.getObjectName(), object.getFullPath());
+        minIoService.deleteObject(user.getUsername(), object);
+        return "redirect:/?path=" + URLEncoder.encode(object.getFullPath(), StandardCharsets.UTF_8);
+    }
+
+    @PatchMapping(value = "/rename")
+    public String renameObject(@AuthenticationPrincipal User user,
+                             @RequestParam(value = "newName", required = false) String newName,
+                             @ModelAttribute MinIoResObject object) {
+        log.info("rename object [{}] on path [{}] with new name[{}]",
+                object.getObjectName(), object.getFullPath(), newName);
+        return "redirect:/?path=" + URLEncoder.encode(object.getFullPath(), StandardCharsets.UTF_8);
+    }
+}

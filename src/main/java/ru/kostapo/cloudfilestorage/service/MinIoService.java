@@ -49,13 +49,12 @@ public class MinIoService implements StorageService {
     }
 
     @Override
-    public void removeFile(String username, String path) {
-        minioRepository.removeFile(username, path);
-    }
-
-    @Override
-    public void removeFolder(String username, String path) {
-        minioRepository.removeFolder(username, path);
+    public void deleteObject(String username, MinIoResObject object) {
+        if (object.isItIsDir()) {
+            minioRepository.removeFolder(username, object.getFullPath() + object.getObjectName());
+        } else {
+            minioRepository.removeFile(username, object.getFullPath() + object.getObjectName());
+        }
     }
 
     private String getObjectName(String objectPath) {

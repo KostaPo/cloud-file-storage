@@ -4,7 +4,7 @@ document.getElementById("clearQueue").style.display = "none";
 var previewTemplate = document.querySelector('#preview_template').innerHTML;
 
 var myDropzone = new Dropzone("#myDropzone", {
-    url: "file/upload",
+    url: "object/upload/file",
     renameFile: function (file) {
         return file.fullPath;
     },
