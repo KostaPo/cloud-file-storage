@@ -128,25 +128,25 @@
                         <div th:id="'actionIcons-' + ${item.hashCode()}" class="collapse w-100">
                             <div class="d-flex justify-content-around">
                                 <div>
-                                    <form th:action="@{/object/remove}" th:object="${object}" method="post">
+                                    <form th:action="@{/object/delete}" th:object="${object}" method="post">
                                         <input type="hidden" name="itIsDir" th:value="${item.itIsDir}"/>
                                         <input type="hidden" name="fullPath" th:value="${item.fullPath}"/>
                                         <input type="hidden" name="objectName" th:value="${item.objectName}"/>
                                         <input type="hidden" name="_method" value="delete"/>
-                                        <button type="submit" class="item-action delete-icon-action" title="Delete">
+                                        <button type="submit" class="item-action delete-icon-action" title="Удалить">
                                             <i class="fa fa-times-circle"></i>
                                         </button>
                                     </form>
                                 </div>
                                 <div>
-                                    <a href="#" class="item-action edit-icon-action" title="Edit" data-bs-toggle="modal"
+                                    <a href="#" class="item-action edit-icon-action" title="Переименовать" data-bs-toggle="modal"
                                        data-bs-target="#modalEdit">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </div>
                                 <div>
                                     <a th:href="@{/path_to_download_method}" class="item-action download-icon-action"
-                                       title="Download">
+                                       title="Скачать">
                                         <i class="fa fa-download"></i>
                                     </a>
                                 </div>
@@ -155,8 +155,7 @@
                     </div>
                 </div>
             </div>
-            <a th:if="${item.itIsDir}" th:href="@{/(path=${breadcrumbs.currentPath + item.objectName + '/'})}"
-               class="dir-link">
+            <a th:if="${item.itIsDir}" th:href="@{/(path=${item.fullPath + item.objectName + '/'})}" class="dir-link">
                 <div class="row">
                     <div class="col-12 d-flex justify-content-center">
                         <div class="item-icon"><i class="icon-folder-empty"></i></div>
@@ -184,6 +183,31 @@
                     </div>
                 </div>
             </th:block>
+        </div>
+    </div>
+    <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Переименовать</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/object/rename}" th:object="${object}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="newName" class="form-label">Введите новое имя:</label>
+                            <input type="text" class="form-control" id="newName" name="newName" required>
+                            <input type="hidden" name="itIsDir" th:value="${item.itIsDir}"/>
+                            <input type="hidden" name="fullPath" th:value="${item.fullPath}"/>
+                            <input type="hidden" name="objectName" th:value="${item.objectName}"/>
+                        </div>
+                    </div>
+                    <input type="hidden" name="_method" value="patch">
+                    <div class="modal-footer justify-content-center">
+                        <button type="submit" class="btn btn-success">Отправить</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

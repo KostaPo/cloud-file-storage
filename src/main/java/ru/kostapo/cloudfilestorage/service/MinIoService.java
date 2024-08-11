@@ -18,8 +18,8 @@ public class MinIoService implements StorageService {
     private final MinioRepository minioRepository;
 
     @Override
-    public List<MinIoResObject> getAllObjectsByPath(String username, String path) {
-        List<Item> items = minioRepository.getAllByPath(username, path);
+    public List<MinIoResObject> getAllObjectsByFolder(String username, String folderPath) {
+        List<Item> items = minioRepository.getAllByFolder(username, folderPath);
         return ObjectMapper.INSTANCE.mapItemsToMinIoResObjects(items);
     }
 
@@ -55,6 +55,14 @@ public class MinIoService implements StorageService {
         } else {
             minioRepository.removeFile(username, object.getFullPath() + object.getObjectName());
         }
+    }
+
+    @Override
+    public void renameObject(String username, MinIoResObject object, String newName) {
+        String oldSource = object.getFullPath() + object.getObjectName();
+        String newSource = object.getFullPath() + newName;
+        minioRepository.copyObject(username, oldSource, newSource);
+        deleteObject(username, object);
     }
 
     private String getObjectName(String objectPath) {

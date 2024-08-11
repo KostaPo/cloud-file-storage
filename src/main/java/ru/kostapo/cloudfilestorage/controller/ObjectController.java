@@ -37,7 +37,7 @@ public class ObjectController {
         List<MinIoReqObject> dtoFiles = ObjectMapper.INSTANCE.multipartFilesToMinIoObjectList(user.getUsername(), files);
         minIoService.uploadFiles(dtoFiles, path);
         log.info("upload [{}] files to [{}]", files.length, String.join("/", user.getUsername(), path));
-        List<MinIoResObject> items = minIoService.getAllObjectsByPath(user.getUsername(), path);
+        List<MinIoResObject> items = minIoService.getAllObjectsByFolder(user.getUsername(), path);
         BreadcrumbsDto breadcrumbs = BreadcrumbsMapper.INSTANCE.mapToDto(path == null ? "" : path);
         model.addAttribute("items", items);
         model.addAttribute("breadcrumbs", breadcrumbs);
@@ -69,6 +69,7 @@ public class ObjectController {
                              @ModelAttribute MinIoResObject object) {
         log.info("rename object [{}] on path [{}] with new name[{}]",
                 object.getObjectName(), object.getFullPath(), newName);
+        minIoService.renameObject(user.getUsername(), object, newName);
         return "redirect:/?path=" + URLEncoder.encode(object.getFullPath(), StandardCharsets.UTF_8);
     }
 }

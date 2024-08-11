@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface StorageService {
 
-    List<MinIoResObject> getAllObjectsByPath(String username, String path);
+    List<MinIoResObject> getAllObjectsByFolder(String username, String folderPath);
 
     List<MinIoResObject> getAllObjectsBySearchQuery(String username, String query);
 
@@ -16,4 +16,6 @@ public interface StorageService {
     void uploadFolder(String username, String path, String name);
 
     void deleteObject(String username, MinIoResObject object);
+
+    void renameObject(String username, MinIoResObject object, String newName);
 }

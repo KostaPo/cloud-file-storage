@@ -90,14 +90,8 @@ public class MinioRepository {
 
     public void removeFolder(String username, String path) {
         try {
-            Iterable<Result<Item>> results = minioClient.listObjects(
-                    ListObjectsArgs.builder()
-                            .bucket(bucketName)
-                            .prefix(username + "/" + path)
-                            .recursive(true)
-                            .build());
-            for (Result<Item> result : results) {
-                Item item = result.get();
+            List<Item> results = getAllByPath(username, path);
+            for (Item item : results) {
                 minioClient.removeObject(RemoveObjectArgs.builder()
                         .bucket(bucketName)
                         .object(item.objectName())
@@ -110,12 +104,22 @@ public class MinioRepository {
         }
     }
 
+    public List<Item> getAllByFolder(String username, String folderPath) {
+        Iterable<Result<Item>> results = minioClient.listObjects(
+                ListObjectsArgs.builder()
+                        .bucket(bucketName)
+                        .prefix(username + "/" + folderPath)
+                        .recursive(false)
+                        .build());
+        return extractItems(results);
+    }
+
     public List<Item> getAllByPath(String username, String path) {
         Iterable<Result<Item>> results = minioClient.listObjects(
                 ListObjectsArgs.builder()
                         .bucket(bucketName)
                         .prefix(username + "/" + path)
-                        .recursive(false)
+                        .recursive(true)
                         .build());
         return extractItems(results);
     }
@@ -127,25 +131,12 @@ public class MinioRepository {
     }
 
     private void itemsRecursiveSearch(String username, String path, List<Item> allItems) {
-        Iterable<Result<Item>> results = minioClient.listObjects(
-                ListObjectsArgs.builder()
-                        .bucket(bucketName)
-                        .prefix(username + "/" + path)
-                        .recursive(false)
-                        .build());
-
-        for (Result<Item> result : results) {
-            try {
-                Item item = result.get();
-                allItems.add(item);
-                if (item.isDir()) {
-                    String nextPath = item.objectName().substring(username.length() + 1);
-                    itemsRecursiveSearch(username, nextPath, allItems);
-                }
-            } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
-                     NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
-                     InvalidKeyException e) {
-                throw new StorageException("Storage service can't recursive search items");
+        List<Item> results = getAllByFolder(username, path);
+        for (Item item : results) {
+            allItems.add(item);
+            if (item.isDir()) {
+                String nextPath = item.objectName().substring(username.length() + 1);
+                itemsRecursiveSearch(username, nextPath, allItems);
             }
         }
     }
@@ -162,5 +153,24 @@ public class MinioRepository {
             }
         }
         return objectsList;
+    }
+
+    public void copyObject(String username, String currentPath, String newPath) {
+        try {
+            minioClient.copyObject(CopyObjectArgs
+                    .builder()
+                    .bucket(bucketName)
+                    .object(username + "/" + newPath)
+                    .source(CopySource
+                            .builder()
+                            .bucket(bucketName)
+                            .object(username + "/" + currentPath)
+                            .build())
+                    .build());
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
+                 NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
+                 InvalidKeyException e) {
+            throw new StorageException("Storage service can't copy file");
+        }
     }
 }
