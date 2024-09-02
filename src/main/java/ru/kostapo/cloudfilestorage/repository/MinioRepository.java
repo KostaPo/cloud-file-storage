@@ -3,6 +3,7 @@ package ru.kostapo.cloudfilestorage.repository;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.messages.Item;
+import io.minio.messages.Source;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -45,13 +46,14 @@ public class MinioRepository {
     }
 
     public void uploadFile(String username, String path, MultipartFile file) {
+        log.info("user [{}] try to upload file...", username);
         try (InputStream stream = file.getInputStream()) {
             minioClient.putObject(PutObjectArgs.builder()
                     .stream(stream, file.getSize(), -1)
                     .bucket(bucketName)
                     .object(username + "/" + path + file.getOriginalFilename())
                     .build());
-            log.info("correct upload file '{}' ", file.getOriginalFilename());
+            log.info("user [{}] upload file '{}' ", username, file.getOriginalFilename());
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
                  NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
                  InvalidKeyException e) {
@@ -60,6 +62,7 @@ public class MinioRepository {
     }
 
     public void uploadFolder(String username, String path, String name) {
+        log.info("user [{}] try to upload folder...", username);
         try {
             minioClient.putObject(
                     PutObjectArgs.builder()
@@ -67,6 +70,7 @@ public class MinioRepository {
                             .object(username + "/" + path + name + "/")
                             .stream(new ByteArrayInputStream(new byte[]{}), 0, -1)
                             .build());
+            log.info("user [{}] upload folder [{}] by path '{}'", username, name, path);
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
                  NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
                  InvalidKeyException e) {
@@ -75,12 +79,14 @@ public class MinioRepository {
     }
 
     public void removeFile(String username, String path) {
+        log.info("user [{}] try to remove file...", username);
         try {
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket(bucketName)
                             .object(username + "/" + path)
                             .build());
+            log.info("user [{}] remove [{}]", username, path);
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
                  NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
                  InvalidKeyException e) {
@@ -89,6 +95,7 @@ public class MinioRepository {
     }
 
     public void removeFolder(String username, String path) {
+        log.info("user [{}] try to remove folder...", username);
         try {
             List<Item> results = getAllByPath(username, path);
             for (Item item : results) {
@@ -97,6 +104,7 @@ public class MinioRepository {
                         .object(item.objectName())
                         .build());
             }
+            log.info("user [{}] remove [{}]", username, path);
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
                  NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
                  InvalidKeyException e) {
@@ -105,40 +113,54 @@ public class MinioRepository {
     }
 
     public List<Item> getAllByFolder(String username, String folderPath) {
+        log.info("user [{}] try to get all by folder...", username);
         Iterable<Result<Item>> results = minioClient.listObjects(
                 ListObjectsArgs.builder()
                         .bucket(bucketName)
                         .prefix(username + "/" + folderPath)
                         .recursive(false)
                         .build());
+        log.info("user [{}] get all objects by folder [{}]", username, folderPath);
         return extractItems(results);
     }
 
     public List<Item> getAllByPath(String username, String path) {
+        log.info("user [{}] try to get all by path...", username);
         Iterable<Result<Item>> results = minioClient.listObjects(
                 ListObjectsArgs.builder()
                         .bucket(bucketName)
                         .prefix(username + "/" + path)
                         .recursive(true)
                         .build());
+        log.info("user [{}] get all objects by path [{}]", username, path);
         return extractItems(results);
+    }
+
+    public void copyObject(String username, String currentPath, String newPath) {
+        log.info("user [{}] try to copy FROM [{}] TO [{}]", username, currentPath, newPath);
+        try {
+            minioClient.copyObject(CopyObjectArgs
+                    .builder()
+                    .bucket(bucketName)
+                    .object(username + "/" + newPath)
+                    .source(CopySource
+                            .builder()
+                            .bucket(bucketName)
+                            .object(username + "/" + currentPath)
+                            .build())
+                    .build());
+            log.info("success copy FROM [{}] TO [{}]", currentPath, newPath);
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
+                 NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
+                 InvalidKeyException e) {
+            throw new StorageException("Storage service can't copy file");
+        }
     }
 
     public List<Item> getAllByUser(String username) {
         List<Item> allUserItems = new ArrayList<>();
         itemsRecursiveSearch(username, "", allUserItems);
         return allUserItems;
-    }
-
-    private void itemsRecursiveSearch(String username, String path, List<Item> allItems) {
-        List<Item> results = getAllByFolder(username, path);
-        for (Item item : results) {
-            allItems.add(item);
-            if (item.isDir()) {
-                String nextPath = item.objectName().substring(username.length() + 1);
-                itemsRecursiveSearch(username, nextPath, allItems);
-            }
-        }
     }
 
     private List<Item> extractItems(Iterable<Result<Item>> results) {
@@ -155,22 +177,16 @@ public class MinioRepository {
         return objectsList;
     }
 
-    public void copyObject(String username, String currentPath, String newPath) {
-        try {
-            minioClient.copyObject(CopyObjectArgs
-                    .builder()
-                    .bucket(bucketName)
-                    .object(username + "/" + newPath)
-                    .source(CopySource
-                            .builder()
-                            .bucket(bucketName)
-                            .object(username + "/" + currentPath)
-                            .build())
-                    .build());
-        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
-                 NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
-                 InvalidKeyException e) {
-            throw new StorageException("Storage service can't copy file");
+    private void itemsRecursiveSearch(String username, String path, List<Item> allItems) {
+        List<Item> results = getAllByFolder(username, path);
+        for (Item item : results) {
+            if (!(!item.isDir() && item.objectName().endsWith("/"))) {
+                allItems.add(item);
+            }
+            if (item.isDir()) {
+                String nextPath = item.objectName().substring(username.length() + 1);
+                itemsRecursiveSearch(username, nextPath, allItems);
+            }
         }
     }
 }
