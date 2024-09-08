@@ -1,8 +1,10 @@
 package ru.kostapo.cloudfilestorage.service;
 
+import org.springframework.core.io.InputStreamResource;
 import ru.kostapo.cloudfilestorage.entity.dto.MinIoReqObject;
 import ru.kostapo.cloudfilestorage.entity.dto.MinIoResObject;
 
+import java.io.InputStream;
 import java.util.List;
 
 public interface StorageService {
@@ -18,4 +20,6 @@ public interface StorageService {
     void deleteObject(String username, MinIoResObject object);
 
     void renameObject(String username, MinIoResObject object, String newName);
+
+    InputStreamResource downloadObject(String username, MinIoResObject object);
 }

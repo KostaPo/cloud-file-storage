@@ -2,6 +2,9 @@ package ru.kostapo.cloudfilestorage.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
@@ -15,6 +18,7 @@ import ru.kostapo.cloudfilestorage.mapper.BreadcrumbsMapper;
 import ru.kostapo.cloudfilestorage.mapper.ObjectMapper;
 import ru.kostapo.cloudfilestorage.service.MinIoService;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -29,9 +33,9 @@ public class ObjectController {
 
     @PostMapping("/upload/file")
     public String uploadFile(@AuthenticationPrincipal User user,
-                              @RequestParam(value = "path", required = false) String path,
-                              @RequestParam("data") MultipartFile[] files,
-                              Model model) {
+                             @RequestParam(value = "path", required = false) String path,
+                             @RequestParam("data") MultipartFile[] files,
+                             Model model) {
 
         log.info("POST request on UPLOAD by user [{}]", user.getUsername());
         List<MinIoReqObject> dtoFiles = ObjectMapper.INSTANCE.multipartFilesToMinIoObjectList(user.getUsername(), files);
@@ -65,11 +69,26 @@ public class ObjectController {
 
     @PatchMapping(value = "/rename")
     public String renameObject(@AuthenticationPrincipal User user,
-                             @RequestParam(value = "newName", required = false) String newName,
-                             @ModelAttribute MinIoResObject object) {
+                               @RequestParam(value = "newName", required = false) String newName,
+                               @ModelAttribute MinIoResObject object) {
         log.info("rename object [{}] on path [{}] with new name[{}]",
                 object.getObjectName(), object.getFullPath(), newName);
         minIoService.renameObject(user.getUsername(), object, newName);
         return "redirect:/?path=" + URLEncoder.encode(object.getFullPath(), StandardCharsets.UTF_8);
+    }
+
+    @GetMapping(value = "/download")
+    public ResponseEntity<?> downloadObject(@AuthenticationPrincipal User user,
+                                            @ModelAttribute MinIoResObject object) {
+        InputStreamResource objectData = minIoService.downloadObject(user.getUsername(), object);
+        String objectName = object.isItIsDir()
+                ? String.format("%s.zip", object.getObjectName())
+                : object.getObjectName();
+        log.info("download object [{}]", objectName);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"",
+                        URLEncoder.encode(objectName, StandardCharsets.UTF_8)))
+                .body(objectData);
     }
 }

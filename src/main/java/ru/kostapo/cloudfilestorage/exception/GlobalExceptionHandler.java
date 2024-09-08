@@ -36,6 +36,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
+    @ExceptionHandler(FileNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleFileNotFoundException(StorageException ex) {
+        log.error("FileNotFoundException: " + ex.getMessage());
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<Map<String, String>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         log.error("MaxUploadSizeExceededException: " + ex.getMessage());

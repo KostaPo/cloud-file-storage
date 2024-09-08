@@ -10,15 +10,18 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
+import ru.kostapo.cloudfilestorage.exception.FileNotFoundException;
 import ru.kostapo.cloudfilestorage.exception.StorageException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class MinioRepository {
 
     @Value("${minio.client.bucket-name}")
     private String bucketName;
+    private final Path tempDirectory = Path.of(System.getProperty("java.io.tmpdir"));
 
     private final MinioClient minioClient;
 
@@ -36,8 +40,10 @@ public class MinioRepository {
             if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
                 log.info("create MinIO bucket with name [{}]", bucketName);
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+                log.info ("bucket created with temp directory [{}]", tempDirectory);
             }
             log.info("MinIO bucket [{}] already created", bucketName);
+            log.info ("temp directory [{}]", tempDirectory);
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
                  NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
                  InvalidKeyException e) {
@@ -154,6 +160,21 @@ public class MinioRepository {
                  NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
                  InvalidKeyException e) {
             throw new StorageException("Storage service can't copy file");
+        }
+    }
+
+    public InputStream downloadFile(String username, String filePath) {
+        log.info("user [{}] try to download file [{}]...", username, filePath);
+        try {
+            return minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(username + "/" + filePath)
+                            .build());
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
+                 NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
+                 InvalidKeyException e) {
+            throw new FileNotFoundException(String.format("file [%s] not found", filePath));
         }
     }
 

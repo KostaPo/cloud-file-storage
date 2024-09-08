@@ -145,10 +145,15 @@
                                     </a>
                                 </div>
                                 <div>
-                                    <a th:href="@{/path_to_download_method}" class="item-action download-icon-action"
-                                       title="Скачать">
-                                        <i class="fa fa-download"></i>
-                                    </a>
+                                    <form th:action="@{/object/download}" th:object="${object}" th:method="get">
+                                        <input type="hidden" name="itIsDir" th:value="${item.itIsDir}"/>
+                                        <input type="hidden" name="fullPath" th:value="${item.fullPath}"/>
+                                        <input type="hidden" name="objectName" th:value="${item.objectName}"/>
+                                        <input type="hidden" name="_method" value="delete"/>
+                                        <button type="submit" class="item-action download-icon-action" title="Скачать">
+                                            <i class="fa fa-download"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
