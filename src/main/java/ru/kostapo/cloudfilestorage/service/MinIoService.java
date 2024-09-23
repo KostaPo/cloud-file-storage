@@ -134,6 +134,13 @@ public class MinIoService implements StorageService {
         return newName;
     }
 
+    private void replaceFolderName(String username, MinIoResObject file, String oldName, String newName) {
+        String oldPath = file.getFullPath() + file.getObjectName();
+        String newPath = oldPath.replace(oldName, newName);
+        minioRepository.copyObject(username, oldPath, newPath);
+        deleteObject(username, file);
+    }
+
     private ByteArrayInputStream getZipByteArrayByFolder (String username, MinIoResObject folderObject) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try (ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream)) {
