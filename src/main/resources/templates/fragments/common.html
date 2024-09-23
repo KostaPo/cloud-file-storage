@@ -132,6 +132,7 @@
                                         <input type="hidden" name="itIsDir" th:value="${item.itIsDir}"/>
                                         <input type="hidden" name="fullPath" th:value="${item.fullPath}"/>
                                         <input type="hidden" name="objectName" th:value="${item.objectName}"/>
+                                        <input type="hidden" name="path" th:value="${item.fullPath}"/>
                                         <input type="hidden" name="_method" value="delete"/>
                                         <button type="submit" class="item-action delete-icon-action" title="Удалить">
                                             <i class="fa fa-times-circle"></i>
@@ -149,7 +150,7 @@
                                         <input type="hidden" name="itIsDir" th:value="${item.itIsDir}"/>
                                         <input type="hidden" name="fullPath" th:value="${item.fullPath}"/>
                                         <input type="hidden" name="objectName" th:value="${item.objectName}"/>
-                                        <input type="hidden" name="_method" value="delete"/>
+                                        <input type="hidden" name="path" th:value="${item.fullPath}"/>
                                         <button type="submit" class="item-action download-icon-action" title="Скачать">
                                             <i class="fa fa-download"></i>
                                         </button>
@@ -205,6 +206,7 @@
                             <input type="hidden" name="itIsDir" th:value="${item.itIsDir}"/>
                             <input type="hidden" name="fullPath" th:value="${item.fullPath}"/>
                             <input type="hidden" name="objectName" th:value="${item.objectName}"/>
+                            <input type="hidden" name="path" th:value="${item.fullPath}"/>
                         </div>
                     </div>
                     <input type="hidden" name="_method" value="patch">
@@ -227,5 +229,3 @@
         </div>
     </div>
 </div>
-
-

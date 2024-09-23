@@ -2,23 +2,25 @@ package ru.kostapo.cloudfilestorage.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.kostapo.cloudfilestorage.entity.dto.BreadcrumbsDto;
 import ru.kostapo.cloudfilestorage.entity.dto.MinIoReqObject;
 import ru.kostapo.cloudfilestorage.entity.dto.MinIoResObject;
+import ru.kostapo.cloudfilestorage.exception.valid.ValidName;
 import ru.kostapo.cloudfilestorage.mapper.BreadcrumbsMapper;
 import ru.kostapo.cloudfilestorage.mapper.ObjectMapper;
 import ru.kostapo.cloudfilestorage.service.MinIoService;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -27,6 +29,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/object")
+@Validated
 public class ObjectController {
 
     private final MinIoService minIoService;
@@ -50,8 +53,8 @@ public class ObjectController {
 
     @PostMapping("/upload/folder")
     public String uploadFolder(@AuthenticationPrincipal User user,
-                               @RequestParam(value = "path", required = false) String path,
-                               @RequestParam(value = "folderName") String folderName) {
+                               @RequestParam String path,
+                               @RequestParam @ValidName String folderName) {
         log.info("POST request on UPLOAD by user [{}]", user.getUsername());
         minIoService.uploadFolder(user.getUsername(), path, folderName);
         log.info("create folder on path [{}] with name [{}]",
@@ -59,8 +62,10 @@ public class ObjectController {
         return "redirect:/?path=" + URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
 
+
     @DeleteMapping(value = "/delete")
     public String deleteObject(@AuthenticationPrincipal User user,
+                               @RequestParam String path,
                                @ModelAttribute MinIoResObject object) {
         log.info("delete object [{}] by path [{}]", object.getObjectName(), object.getFullPath());
         minIoService.deleteObject(user.getUsername(), object);
@@ -69,7 +74,8 @@ public class ObjectController {
 
     @PatchMapping(value = "/rename")
     public String renameObject(@AuthenticationPrincipal User user,
-                               @RequestParam(value = "newName", required = false) String newName,
+                               @RequestParam String path,
+                               @RequestParam @ValidName String newName,
                                @ModelAttribute MinIoResObject object) {
         log.info("rename object [{}] on path [{}] with new name[{}]",
                 object.getObjectName(), object.getFullPath(), newName);
@@ -79,6 +85,7 @@ public class ObjectController {
 
     @GetMapping(value = "/download")
     public ResponseEntity<?> downloadObject(@AuthenticationPrincipal User user,
+                                            @RequestParam String path,
                                             @ModelAttribute MinIoResObject object) {
         InputStreamResource objectData = minIoService.downloadObject(user.getUsername(), object);
         String objectName = object.isItIsDir()
