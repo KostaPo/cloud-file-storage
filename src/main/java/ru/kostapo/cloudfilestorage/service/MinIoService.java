@@ -78,12 +78,14 @@ public class MinIoService implements StorageService {
     public void renameObject(String username, MinIoResObject object, String newName) {
         if (object.isItIsDir()) {
             log.info("RENAME FOLDER");
-            List<Item> objectsForRename = minioRepository.getAllByPath(username, object.getFullPath() + object.getObjectName());
-            for (Item i : objectsForRename) {
-                MinIoResObject tmp = ObjectMapper.INSTANCE.itemToMinIoResObject(i);
-                if (!isObjectDir(i)) {
-                    replaceFolderName(username, tmp, object.getObjectName(), newName);
+            List<Item> items = minioRepository.getAllByPath(username, object.getFullPath() + object.getObjectName());
+            List<MinIoResObject> objectsForRename = ObjectMapper.INSTANCE.mapItemsToMinIoResObjects(items);
+            if (!objectsForRename.isEmpty()) {
+                for (MinIoResObject i : objectsForRename) {
+                    replaceFolderName(username, i, object.getObjectName(), newName);
                 }
+            } else {
+                uploadFolder(username, object.getFullPath(), newName);
             }
             deleteObject(username, object);
         } else {
@@ -141,7 +143,7 @@ public class MinIoService implements StorageService {
         deleteObject(username, file);
     }
 
-    private ByteArrayInputStream getZipByteArrayByFolder (String username, MinIoResObject folderObject) {
+    private ByteArrayInputStream getZipByteArrayByFolder(String username, MinIoResObject folderObject) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try (ZipOutputStream zipOut = new ZipOutputStream(byteArrayOutputStream)) {
             List<Item> objects =

@@ -5,7 +5,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class NameValidator implements ConstraintValidator<ValidName, String> {
 
-    private static final String NAME_REGEX = "^[А-Яа-яЁёA-Za-z0-9.]+$";
+    private static final String NAME_REGEX = "^[А-Яа-яЁёA-Za-z0-9]+$";
 
     @Override
     public boolean isValid(String name, ConstraintValidatorContext context) {
