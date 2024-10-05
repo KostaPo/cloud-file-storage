@@ -4,10 +4,11 @@ import org.springframework.core.io.InputStreamResource;
 import ru.kostapo.cloudfilestorage.entity.dto.MinIoReqObject;
 import ru.kostapo.cloudfilestorage.entity.dto.MinIoResObject;
 
-import java.io.InputStream;
 import java.util.List;
 
 public interface StorageService {
+
+    boolean isBucketExists(String bucketName);
 
     List<MinIoResObject> getAllObjectsByFolder(String username, String folderPath);
 

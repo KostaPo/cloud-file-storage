@@ -29,6 +29,11 @@ public class MinIoService implements StorageService {
     private final MinioRepository minioRepository;
 
     @Override
+    public boolean isBucketExists(String bucketName) {
+        return minioRepository.isBucketExists(bucketName);
+    }
+
+    @Override
     public List<MinIoResObject> getAllObjectsByFolder(String username, String folderPath) {
         log.info("GET ALL BY FOLDER");
         List<Item> items = minioRepository.getAllByFolder(username, folderPath);

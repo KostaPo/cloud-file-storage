@@ -18,11 +18,11 @@ import ru.kostapo.cloudfilestorage.service.UserService;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-public class SecurityConfiguration {
+public class SecurityConfig {
 
     private final UserService userService;
 
-    public SecurityConfiguration(@Lazy UserService userService) {
+    public SecurityConfig(@Lazy UserService userService) {
         this.userService = userService;
     }
 

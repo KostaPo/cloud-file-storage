@@ -37,7 +37,7 @@ public class MinioRepository {
     @PostConstruct
     public void createAppRootBucket() {
         try {
-            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {
+            if (!isBucketExists(bucketName)) {
                 log.info("create MinIO bucket with name [{}]", bucketName);
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
                 log.info ("bucket created with temp directory [{}]", tempDirectory);
@@ -48,6 +48,16 @@ public class MinioRepository {
                  NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
                  InvalidKeyException e) {
             throw new RuntimeException("Storage service can't create root bucket");
+        }
+    }
+    
+    public boolean isBucketExists(String bucketName) {
+        try {
+            return minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
+                 NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
+                 InvalidKeyException e) {
+            throw new RuntimeException("Can't check root bucket exists");
         }
     }
 

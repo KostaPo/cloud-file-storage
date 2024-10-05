@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.kostapo.cloudfilestorage.entity.AppUser;
 import ru.kostapo.cloudfilestorage.entity.AppUserRole;
 import ru.kostapo.cloudfilestorage.entity.dto.UserReqDto;
