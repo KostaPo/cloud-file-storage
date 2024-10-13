@@ -10,6 +10,8 @@ public interface StorageService {
 
     boolean isBucketExists(String bucketName);
 
+    boolean isObjectExists(String objectPath);
+
     List<MinIoResObject> getAllObjectsByFolder(String username, String folderPath);
 
     List<MinIoResObject> getAllObjectsBySearchQuery(String username, String query);

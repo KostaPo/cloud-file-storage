@@ -3,7 +3,6 @@ package ru.kostapo.cloudfilestorage;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -14,11 +13,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(classes = TestConfig.class)
+
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
-public class TestRegistrationController {
+public class TestRegistrationController extends BaseIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -71,15 +69,11 @@ public class TestRegistrationController {
     @Order(5)
     @DisplayName("POST '/registration' [409 conflict] для NON_UNIQ данных")
     public void test05_nonUniqDataRequestRegistration() throws Exception {
-        // регистрируем юзера
-        mockMvc.perform(post("/registration")
-                .param("username", "usr")
-                .param("password", "pwd"));
 
-        // запрос на повторную регистрацию этого юзера
+        // запрос на повторную регистрацию юзера (который уже есть в БД)
         MockHttpServletRequestBuilder request = post("/registration")
-                .param("username", "usr")
-                .param("password", "pwd");
+                .param("username", "NoUniqUser")
+                .param("password", "NoUniqPass");
 
         mockMvc.perform(request)
                 .andExpect(status().isConflict());

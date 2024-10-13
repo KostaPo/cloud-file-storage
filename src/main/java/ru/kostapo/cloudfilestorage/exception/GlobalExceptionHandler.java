@@ -54,10 +54,10 @@ public class GlobalExceptionHandler {
         return "redirect:/?path=" + URLEncoder.encode(path, StandardCharsets.UTF_8);
     }
 
-    @ExceptionHandler(FileNotFoundException.class)
-    public String handleFileNotFoundException(FileNotFoundException ex, HttpServletRequest request,
+    @ExceptionHandler(ObjectNotFoundException.class)
+    public String handleFileNotFoundException(ObjectNotFoundException ex, HttpServletRequest request,
                                               RedirectAttributes redirectAttributes) {
-        log.error("FileNotFoundException: " + ex.getMessage());
+        log.error("ObjectNotFoundException: " + ex.getMessage());
         String path = request.getParameter("path") != null ? request.getParameter("path") : "";
         redirectAttributes.addFlashAttribute("message", ex.getMessage());
         return "redirect:/?path=" + URLEncoder.encode(path, StandardCharsets.UTF_8);
