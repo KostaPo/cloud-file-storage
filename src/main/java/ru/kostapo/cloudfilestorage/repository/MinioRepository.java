@@ -28,7 +28,6 @@ public class MinioRepository {
 
     @Value("${minio.client.bucket-name}")
     private String bucketName;
-    private final Path tempDirectory = Path.of(System.getProperty("java.io.tmpdir"));
 
     private final MinioClient minioClient;
 
@@ -38,10 +37,9 @@ public class MinioRepository {
             if (!isBucketExists(bucketName)) {
                 log.info("create MinIO bucket with name [{}]", bucketName);
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-                log.info ("bucket created with temp directory [{}]", tempDirectory);
+                log.info ("bucket created");
             }
             log.info("MinIO bucket [{}] already created", bucketName);
-            log.info ("temp directory [{}]", tempDirectory);
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
                  NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
                  InvalidKeyException e) {

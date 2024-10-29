@@ -2,9 +2,11 @@
 /.mvn/
 /app_logs/
 /pg_data/
+/redis_data/
 /target/
 cloud-file-storage.iml
 docker-compose-debug.yml
 HELP.md
 mvnw
 mvnw.cmd
+.env
