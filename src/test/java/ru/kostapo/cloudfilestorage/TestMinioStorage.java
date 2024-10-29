@@ -118,6 +118,33 @@ public class TestMinioStorage extends BaseIntegrationTest {
     @Order(5)
     @DisplayName("Проверка удаления файла")
     public void testFileObjectDelete() {
+        String username = "testuser";
+        String path = "testpath";
+        String filename = "test.txt";
 
+        MockMultipartFile mockFile = new MockMultipartFile("testfile", filename,
+                MediaType.TEXT_PLAIN_VALUE, "TestText".getBytes());
+        MockMultipartFile[] mockFilesList = new MockMultipartFile[]{mockFile};
+
+        //ЗАГРУЖАЕМ
+        minIoService.uploadFiles(
+                ObjectMapper.INSTANCE.multipartFilesToMinIoObjectList(username, mockFilesList),
+                String.format("%s/", path));
+        //ПРОВЕРЯЕМ
+        boolean exists = minIoService.isObjectExists(String.format("%s/%s/%s", username, path, filename));
+        assertTrue(exists);
+
+        MinIoResObject fileObject = new MinIoResObject();
+        fileObject.setItIsDir(false);
+        fileObject.setFullPath(String.format("%s/", path));
+        fileObject.setObjectName(filename);
+
+        //УДАЛЯЕМ
+        minIoService.deleteObject(username, fileObject);
+
+        //ПРОВЕРЯЕМ
+        assertThrows(ru.kostapo.cloudfilestorage.exception.ObjectNotFoundException.class, () -> {
+            minIoService.isObjectExists(String.format("%s/%s/%s", username, path, filename));
+        });
     }
 }
