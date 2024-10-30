@@ -46,7 +46,7 @@ public class SecurityConfig {
         return http
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/img/**", "/css/**", "/js/**", "/registration")
+                        .requestMatchers("/img/**", "/css/**", "/js/**", "/registration", "/actuator/health")
                         .permitAll()
                         .requestMatchers("/**")
                         .authenticated())

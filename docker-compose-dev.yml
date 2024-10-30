@@ -1,6 +1,5 @@
 version: "3.8"
 services:
-
   java-app:
     build:
       context: .
@@ -8,6 +7,12 @@ services:
     container_name: java-app
     ports:
       - "8080:8080/tcp"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://java-app:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     environment:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://database:5432/DataCloud"
       SPRING_DATASOURCE_USERNAME: "usr"
@@ -38,8 +43,6 @@ services:
       POSTGRES_USER: "usr"
       POSTGRES_PASSWORD: "pwd"
       POSTGRES_DB: "DataCloud"
-    volumes:
-      - ./pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d DataCloud -U usr"]
       interval: 10s
@@ -70,8 +73,6 @@ services:
     ports:
       - "6379:6379"
     command: redis-server --requirepass pwd
-    volumes:
-      - ./redis_data:/data
     healthcheck:
       test: [ "CMD-SHELL", "redis-cli -a pwd ping | grep PONG" ]
       interval: 10s
@@ -81,6 +82,4 @@ services:
 
 volumes:
   app_logs:
-    driver: locals
-  pg_data:
     driver: local

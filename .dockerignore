@@ -7,14 +7,6 @@
 # Игнорировать журналы приложения
 app_logs/
 
-# Игнорировать данные PostgreSQL
-pg_data/
-
-# Игнорировать данные Redis
-redis_data/
-
-# Игнорировать артефакты сборки
-target/
 
 # Игнорировать файлы Markdown
 *.md
@@ -24,3 +16,6 @@ mvnw.*
 
 # Игнорировать файл .env
 .env
+
+# Игнорировать файл cloud-file-storage.iml
+cloud-file-storage.iml

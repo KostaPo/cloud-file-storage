@@ -73,3 +73,21 @@ minio:
     user: ${MINIO_CLIENT_USER}
     password: ${MINIO_CLIENT_PASSWORD}
     bucket-name: root
+
+# ==================================
+#   Actuator HEALTH CHECK
+# ==================================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+      cache:
+        time-to-live: 1000
+
+logging:
+  level:
+    org.springframework.boot.actuate: DEBUG
