@@ -36,7 +36,7 @@ public class MinioRepository {
             if (!isBucketExists(bucketName)) {
                 log.info("create MinIO bucket with name [{}]", bucketName);
                 minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-                log.info ("bucket created");
+                log.info("bucket created");
             }
             log.info("MinIO bucket [{}] already created", bucketName);
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
@@ -45,7 +45,7 @@ public class MinioRepository {
             throw new StorageException("Storage service can't create root bucket");
         }
     }
-    
+
     public boolean isBucketExists(String bucketName) {
         try {
             log.info("checking bucket exists...");
@@ -111,7 +111,7 @@ public class MinioRepository {
 
     public void removeFile(String username, String path) {
         log.info("user [{}] try to remove file...", username);
-        if(isObjectExists(username + "/" + path)) {
+        if (isObjectExists(username + "/" + path)) {
             try {
                 minioClient.removeObject(
                         RemoveObjectArgs.builder()
@@ -129,21 +129,19 @@ public class MinioRepository {
 
     public void removeFolder(String username, String path) {
         log.info("user [{}] try to remove folder...", username);
-        if(isObjectExists(username + "/" + path)) {
-            try {
-                List<Item> results = getAllByPath(username, path);
-                for (Item item : results) {
-                    minioClient.removeObject(RemoveObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(item.objectName())
-                            .build());
-                }
-                log.info("user [{}] remove [{}]", username, path);
-            } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
-                     NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
-                     InvalidKeyException e) {
-                throw new StorageException("Storage service can't remove folder");
+        try {
+            List<Item> results = getAllByPath(username, path);
+            for (Item item : results) {
+                minioClient.removeObject(RemoveObjectArgs.builder()
+                        .bucket(bucketName)
+                        .object(item.objectName())
+                        .build());
             }
+            log.info("user [{}] remove [{}]", username, path);
+        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidResponseException |
+                 NoSuchAlgorithmException | IOException | ServerException | XmlParserException |
+                 InvalidKeyException e) {
+            throw new StorageException("Storage service can't remove folder");
         }
     }
 
@@ -173,7 +171,7 @@ public class MinioRepository {
 
     public void copyObject(String username, String currentPath, String newPath) {
         log.info("user [{}] try to copy FROM [{}] TO [{}]", username, currentPath, newPath);
-        if(isObjectExists(username + "/" + currentPath)) {
+        if (isObjectExists(username + "/" + currentPath)) {
             try {
                 minioClient.copyObject(CopyObjectArgs
                         .builder()
@@ -196,7 +194,7 @@ public class MinioRepository {
 
     public InputStream downloadFile(String username, String filePath) {
         log.info("user [{}] try to download file [{}]...", username, filePath);
-        if(isObjectExists(username + "/" + filePath)) {
+        if (isObjectExists(username + "/" + filePath)) {
             try {
                 return minioClient.getObject(
                         GetObjectArgs.builder()
