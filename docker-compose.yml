@@ -1,0 +1,83 @@
+version: "3.9"
+services:
+  java-app:
+    image: kostapo/cloud-file-storage:latest
+    container_name: java-app
+    ports:
+      - "8080:8080/tcp"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://java-app:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://database:5432/DataCloud"
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      MINIO_CLIENT_ENDPOINT: "http://minio:9000/"
+      MINIO_CLIENT_USER: ${MINIO_CLIENT_USER}
+      MINIO_CLIENT_PASSWORD: ${MINIO_CLIENT_PASSWORD}
+      REDIS_SERVICE_HOST: "redis"
+      REDIS_SERVICE_PORT: ${REDIS_SERVICE_PORT}
+      SPRING_REDIS_PASSWORD: ${SPRING_REDIS_PASSWORD}
+    volumes:
+      - ./app_logs:/etc/java/logs
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  database:
+    image: postgres:15
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      POSTGRES_DB: "DataCloud"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d DataCloud -U usr"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_CLIENT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_CLIENT_PASSWORD}
+    command: server --console-address ":9001" /data
+    healthcheck:
+      test: [ "CMD-SHELL", "mc ready local"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass ${SPRING_REDIS_PASSWORD}
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli -a ${SPRING_REDIS_PASSWORD} ping | grep PONG" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  app_logs:
+    driver: local
