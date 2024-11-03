@@ -3,7 +3,8 @@
 Многопользовательское файловое облако. 
 Пользователи сервиса могут использовать его для загрузки и хранения файлов. 
 
-![image](https://github.com/user-attachments/assets/fae4b127-ac0b-42aa-89a9-3f2667a4e23e)
+![image](https://github.com/user-attachments/assets/2c47f2de-9eda-4f48-97b8-72d1844b6b7e)
+
 
 
 <h1>Техническое задание:</h1>
