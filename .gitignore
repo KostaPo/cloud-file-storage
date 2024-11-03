@@ -9,4 +9,3 @@ docker-compose-debug.yml
 HELP.md
 mvnw
 mvnw.cmd
-.env

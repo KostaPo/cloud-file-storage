@@ -22,15 +22,15 @@ spring:
       namespace: weather-app
   data:
     redis:
+      host: ${REDIS_SERVICE_HOST:localhost}
       port: ${REDIS_SERVICE_PORT}
-      host: ${REDIS_SERVICE_HOST}
       password: ${SPRING_REDIS_PASSWORD}
 
   # ===============================
   # DATABASE
   # ===============================
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/DataCloud}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -44,7 +44,7 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: create
-      dialect: org.hibernate.dialect.PostgreSQLDialect
+      dialect: org.hibernate.dialect.PostgresSQLDialect
 
   # ==================================
   #   Thymeleaf
@@ -69,7 +69,7 @@ spring:
 # ==================================
 minio:
   client:
-    endpoint: ${MINIO_CLIENT_ENDPOINT}
+    endpoint: ${MINIO_CLIENT_ENDPOINT:http://localhost:9000/}
     user: ${MINIO_CLIENT_USER}
     password: ${MINIO_CLIENT_PASSWORD}
     bucket-name: root
@@ -84,7 +84,7 @@ management:
         include: health
   endpoint:
     health:
-      show-details: always
+      show-details: when_authorized
       cache:
         time-to-live: 1000
 
